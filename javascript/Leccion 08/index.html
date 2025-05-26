@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salto del Caballo - Ajedrez</title>
+    <style>
+        .tablero {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            gap: 1px;
+            margin: 20px auto;
+            width: fit-content;
+            border: 2px solid #333;
+        }
+        .casilla {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            position: relative;
+        }
+        .blanca {
+            background-color: #f0d9b5;
+        }
+        .negra {
+            background-color: #b58863;
+        }
+        .visitada {
+            background-color: #90EE90;
+        }
+        .caballo {
+            font-size: 35px;
+            color: #000;
+        }
+        .casilla span {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .controles {
+            text-align: center;
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .velocidad-control {
+            margin: 10px 0;
+        }
+        .botones-control {
+            margin: 10px 0;
+        }
+        button {
+            margin: 0 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+            background-color: #cccccc;
+        }
+        input[type="range"] {
+            width: 200px;
+            margin: 0 10px;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="controles">
+        <h1>Salto del Caballo</h1>
+        <div class="velocidad-control">
+            <label for="velocidad">Velocidad del tour:</label>
+            <input type="range" id="velocidad" min="50" max="1000" value="500" step="50">
+            <span id="velocidad-valor">500ms</span>
+        </div>
+        <div class="botones-control">
+            <button onclick="iniciarTour()" id="btnIniciar">Iniciar Tour</button>
+            <button onclick="pausarTour()" id="btnPausar" disabled>Pausar</button>
+            <button onclick="pasoSiguiente()" id="btnPaso" disabled>Paso a Paso</button>
+            <button onclick="reiniciar()" id="btnReiniciar">Reiniciar</button>
+        </div>
+    </div>
+    <div id="tablero" class="tablero"></div>
+    <script src="caballo.js"></script>
+</body>
+</html>
