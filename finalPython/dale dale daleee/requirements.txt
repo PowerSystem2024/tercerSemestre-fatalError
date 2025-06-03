@@ -1,0 +1,21 @@
+# Pygame - Biblioteca principal para el desarrollo del juego
+# Maneja gráficos, sonido, entrada de usuario y más
+pygame>=2.5.2
+
+# Typing - Biblioteca estándar de Python para anotaciones de tipo
+# Ya viene incluida en Python 3, pero se lista para claridad
+typing>=3.7.4
+
+# JSON y OS - Módulos estándar de Python usados para:
+# - JSON: Manejo de archivos de usuarios y puntajes
+# - OS: Operaciones del sistema de archivos
+# Estos vienen incluidos en Python por defecto
+
+# Random e Itertools - Módulos estándar de Python usados para:
+# - Random: Generación de números aleatorios para spawns de enemigos
+# - Itertools: Utilizado para efectos de pantalla (repeat)
+# Estos vienen incluidos en Python por defecto
+
+# Sys - Módulo estándar de Python usado para:
+# - Control de salida del programa
+# Viene incluido en Python por defecto
