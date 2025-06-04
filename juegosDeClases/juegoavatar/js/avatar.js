@@ -1,6 +1,9 @@
 let ataqueJugador
 let ataqueEnemigo
 
+window.addEventListener('load', iniciarJuego)
+
+
 function iniciarJuego(){
     let botonPersonajeJugador = document.getElementById('boton-personaje');
     botonPersonajeJugador.addEventListener('click', seleccionarPersonajeJugador);
@@ -48,7 +51,7 @@ function ataqueAleatorioEnemigo(){
     let ataqueAleatorio = aleatorio(1, 3)
 
     if(ataqueAleatorio == 1){
-        ataqueEnemigo == 'Punio'
+        ataqueEnemigo = 'Punio'
     }else if(ataqueAleatorio == 2){
         ataqueEnemigo = 'Patada'
     }else {
