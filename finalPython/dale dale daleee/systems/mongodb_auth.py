@@ -4,7 +4,7 @@ from datetime import datetime
 
 class MongoDBAuth:
     def __init__(self):
-        # Conectar a MongoDB Atlas - Reemplaza <db_password> con tu contraseña real
+        # Conectar a MongoDB Atlas -
         self.client = MongoClient('mongodb+srv://game_user:gamer123@cluster0.sawrq3u.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
         self.db = self.client['dale_dale_game']
         self.users = self.db['users']
