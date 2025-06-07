@@ -6,6 +6,13 @@ pygame>=2.5.2
 # Ya viene incluida en Python 3, pero se lista para claridad
 typing>=3.7.4
 
+# PyMongo - Driver oficial de MongoDB para Python
+# Usado para la conexión y operaciones con la base de datos MongoDB
+pymongo>=4.6.1
+
+# python-dotenv - Para cargar variables de entorno desde un archivo .env
+python-dotenv>=1.0.1
+
 # JSON y OS - Módulos estándar de Python usados para:
 # - JSON: Manejo de archivos de usuarios y puntajes
 # - OS: Operaciones del sistema de archivos
