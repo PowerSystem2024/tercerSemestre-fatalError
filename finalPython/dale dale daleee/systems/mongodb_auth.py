@@ -1,11 +1,20 @@
 from pymongo import MongoClient
 from typing import Optional, Dict
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 class MongoDBAuth:
     def __init__(self):
-        # Conectar a MongoDB Atlas -
-        self.client = MongoClient('mongodb+srv://game_user:gamer123@cluster0.sawrq3u.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+        # Obtener la cadena de conexión desde las variables de entorno
+        mongo_uri = os.getenv("MONGO_URI")
+        if not mongo_uri:
+            raise ValueError("MONGO_URI no está configurada en el archivo .env o en las variables de entorno.")
+
+        self.client = MongoClient(mongo_uri)
         self.db = self.client['dale_dale_game']
         self.users = self.db['users']
         

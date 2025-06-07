@@ -1,0 +1,15 @@
+# Archivos y directorios a ignorar por Git
+
+# Archivos de entorno y configuración local
+.env
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+
+# Archivos de guardado de juego y usuarios (si no se manejan por DB)
+save_file.txt
+usuarios.json
+
+# Otros archivos que no deberían estar en el repositorio
+# (puedes añadir aquí otros archivos generados o personales) 
