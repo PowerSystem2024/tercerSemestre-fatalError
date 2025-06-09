@@ -1,3 +1,10 @@
 {
-  
+    "Mati": {
+        "password": "tuki",
+        "high_score": 0
+    },
+    "mati": {
+        "password": "holis",
+        "high_score": 0
+    }
 }
