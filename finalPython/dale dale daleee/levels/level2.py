@@ -410,80 +410,6 @@ class Boss(Entity):
         # Collider general para colisiones con el jugador
         self.collider = [width*0.7, height*0.7]  # Collider más grande
 
-    def update(self):
-        # Animación de crecimiento
-        if self.width < self.m_width:
-            self.width += self.grow_speed
-        if self.height < self.m_height:
-            self.height += self.grow_speed
-
-        player_center = player.get_center()
-        boss_center = self.get_center()
-        
-        # Gestión del dash
-        if self.dash_cooldown > 0:
-            self.dash_cooldown -= 1
-            if self.dash_cooldown == 0:
-                self.is_dashing = False
-                self.speed = self.original_speed
-
-        # Actualizar timer de ataque
-        self.attack_timer += 1
-        if self.attack_timer >= 180:  # Cambiar patrón cada 3 segundos
-            self.attack_timer = 0
-            self.attack_pattern = (self.attack_pattern + 1) % 3
-            
-            # Iniciar dash al cambiar a patrón 2
-            if self.attack_pattern == 2 and not self.is_dashing:
-                self.is_dashing = True
-                self.dash_cooldown = 60
-                self.speed = BOSS_DASH_SPEED
-                dx = player_center[0] - boss_center[0]
-                dy = player_center[1] - boss_center[1]
-                length = (dx ** 2 + dy ** 2) ** 0.5
-                if length > 0:
-                    self.dash_direction = [dx/length, dy/length]
-
-        # Calcular nueva velocidad según el patrón
-        if self.attack_pattern == 0:
-            # Patrón 1: Persecución normal
-            dx = player_center[0] - boss_center[0]
-            dy = player_center[1] - boss_center[1]
-            length = (dx ** 2 + dy ** 2) ** 0.5
-            if length > 0:
-                self.velocity = [dx/length * self.speed, dy/length * self.speed]
-        
-        elif self.attack_pattern == 1:
-            # Patrón 2: Movimiento circular
-            angle = self.attack_timer * 0.1
-            radius = 200
-            target_x = player_center[0] + math.cos(angle) * radius
-            target_y = player_center[1] + math.sin(angle) * radius
-            dx = target_x - boss_center[0]
-            dy = target_y - boss_center[1]
-            length = (dx ** 2 + dy ** 2) ** 0.5
-            if length > 0:
-                self.velocity = [dx/length * self.speed, dy/length * self.speed]
-        
-        else:
-            # Patrón 3: Dash hacia el jugador
-            if self.is_dashing:
-                self.velocity = [self.dash_direction[0] * self.speed,
-                               self.dash_direction[1] * self.speed]
-            else:
-                self.velocity = [0, 0]
-
-        # Actualizar posición con límites
-        new_x = self.x + self.velocity[0]
-        new_y = self.y + self.velocity[1]
-        
-        # Mantener dentro de los límites
-        self.x = max(BOUNDS_X[0], min(new_x, BOUNDS_X[1] - self.width))
-        self.y = max(BOUNDS_Y[0], min(new_y, BOUNDS_Y[1] - self.height))
-        
-        self.draw()  # Llamamos a draw en lugar de super
-
-
     def draw(self):
         super().draw()
         
@@ -501,7 +427,7 @@ class Boss(Entity):
                                 self.y + hitbox[1],
                                 hitbox[2],
                                 hitbox[3]),
-                               width=2)  # Línea más gruesa
+                               width=2)
                 
             # Dibujar el collider general
             x, y = self.get_center()
@@ -511,7 +437,8 @@ class Boss(Entity):
                             self.collider[0],
                             self.collider[1]),
                            width=2)
-    try:
+        
+        try:
             # Dibujar barra de vida del jefe
             health_width = 300  # Barra más ancha
             health_height = 30  # Barra más alta
@@ -546,7 +473,7 @@ class Boss(Entity):
             text_x = health_x + (health_width - health_text.get_width()) / 2
             text_y = health_y + (health_height - health_text.get_height()) / 2
             WINDOW.blit(health_text, (text_x, text_y))
-    except Exception as e:
+        except Exception as e:
             print(f"Error al dibujar la barra de vida: {e}")
 
     def check_hit(self, bullet):
