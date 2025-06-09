@@ -40,7 +40,9 @@ BOUNDS_Y = (50, 620)
 DOWN, HORIZONTAL, UP = 0, 1, 2
 
 #tamaño de los objetos
-PLAYER_SIZE = ENEMY_SIZE = PARTICLES_SIZE = (72, 72)
+PLAYER_SIZE = (72, 72)
+ENEMY_SIZE = (266, 150)
+PARTICLES_SIZE = (72, 72)
 BULLET_SIZE = (16, 16)
 
 #config del cursor 
@@ -51,7 +53,7 @@ CURSOR_SHRINK_SPEED = 3
 #rutas de recursos 
 BACKGROUND = "assets/background.png"
 PLAYER_TILESET = "assets/player-Sheet.png"
-ENEMY_TILESET = "assets/enemy-Sheet.png"
+ENEMY_TILESET = "assets/enemigoslevel1.png"
 BULLET = "assets/bullet.png"
 CURSOR = "assets/cursor.png"
 HEART_FULL = "assets/heart.png"
@@ -198,13 +200,24 @@ def load_tileset(filename, width, height):
     #cargar la imagen tileset en tiles individuales 
     image = pygame.image.load(filename).convert_alpha()
     image_width, image_height = image.get_size()
+    
+    num_cols = image_width // width
+    num_rows = image_height // height
+    
+    print(f"Loading tileset: {filename}")
+    print(f"Frame size: {width}x{height}")
+    print(f"Image size: {image_width}x{image_height}")
+    print(f"Calculated dimensions: {num_cols} columns x {num_rows} rows")
+    
     tileset = []
-    for tile_x in range(0, image_width // width):
+    for tile_x in range(0, num_cols):
         line = []
         tileset.append(line)
-        for tile_y in range(0, image_height // height):
+        for tile_y in range(0, num_rows):
             rect = (tile_x * width, tile_y * height, width, height)
             line.append(image.subsurface(rect))
+    
+    print(f"Actual tileset dimensions: {len(tileset)} columns x {len(tileset[0]) if tileset else 0} rows")
     return tileset
 
 
@@ -231,6 +244,10 @@ class Enemy(Entity):
         self.width = 0
         self.height = 0
         self.grow_speed = 2
+
+        # Cargar tileset específico para el enemigo
+        self.tileset = load_tileset(tileset, 266, 150)
+        print(f"Enemy tileset loaded. Dimensions: {len(self.tileset)}x{len(self.tileset[0])}")
 
         #una cajita de colicion mas chiquita para mejor jugabilidad 
         self.collider = [width / 2.5, height / 1.5]
@@ -259,20 +276,24 @@ class Enemy(Entity):
         super().update()
 
     def change_direction(self):
-        #logica de direccion personalizada para enemigos 
-        if self.velocity[0] < 0:
-            self.direction = HORIZONTAL
-            self.flipX = True
-        elif self.velocity[0] > 0:
-            self.direction = HORIZONTAL
-            self.flipX = False
+        # Mapeo de direcciones para el tileset del enemigo
+        ENEMY_DOWN_ROW = 0
+        ENEMY_UP_ROW = 2
+        ENEMY_HORIZONTAL_ROW = 3
 
-
-        #direccion vertical solo cuando es dominante 
-        if self.velocity[1] > self.velocity[0] > 0:
-            self.direction = DOWN
-        elif self.velocity[1] < self.velocity[0] < 0:
-            self.direction = UP
+        # Determine dominant movement direction
+        if abs(self.velocity[1]) > abs(self.velocity[0]): # Mostly vertical movement
+            if self.velocity[1] > 0:
+                self.direction = ENEMY_DOWN_ROW
+            elif self.velocity[1] < 0:
+                self.direction = ENEMY_UP_ROW
+        else: # Mostly horizontal or no movement
+            if self.velocity[0] < 0:
+                self.direction = ENEMY_HORIZONTAL_ROW
+                self.flipX = True
+            elif self.velocity[0] > 0:
+                self.direction = ENEMY_HORIZONTAL_ROW
+                self.flipX = False
 
     def take_damage(self, damage):
         #manejamos el resibir daño y destruccion
