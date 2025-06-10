@@ -7,6 +7,7 @@ let tiempoEspera = 500;
 let tourEnProgreso = false;
 let tourPausado = false;
 let pasoActual = 0;
+
 let proximoMovimiento = null;
 
 // Posibles movimientos del caballo
