@@ -1,20 +1,46 @@
-function torresDeHanoi(n, origen, destino, auxiliar) {
-    if (n === 1) {
-        console.log(`Mover disco 1 de ${origen} a ${destino}`);
-        return;
-    }
+const numDiscos = 4; // Cambia este número para más discos
+const torres = {
+  A: document.getElementById("A"),
+  B: document.getElementById("B"),
+  C: document.getElementById("C")
+};
 
-    // Mover n-1 discos desde origen a auxiliar
-    torresDeHanoi(n - 1, origen, auxiliar, destino);
-
-    // Mover el disco restante a destino
-    console.log(`Mover disco ${n} de ${origen} a ${destino}`);
-
-    // Mover los n-1 discos desde auxiliar a destino
-    torresDeHanoi(n - 1, auxiliar, destino, origen);
+// Crear discos y agregarlos a la torre A
+const discos = [];
+for (let i = numDiscos; i >= 1; i--) {
+  const disco = document.createElement("div");
+  disco.className = "disk";
+  disco.style.width = `${i * 25}px`;
+  disco.style.zIndex = i;
+  disco.setAttribute("data-size", i);
+  torres.A.appendChild(disco);
+  discos[i] = disco;
 }
 
-// Ejecutar la función con 3 discos
-let numeroDeDiscos = 3;
-torresDeHanoi(numeroDeDiscos, 'A', 'C', 'B');
+let pasos = [];
 
+function torresDeHanoi(n, origen, destino, auxiliar) {
+  if (n === 1) {
+    pasos.push([origen, destino]);
+    return;
+  }
+  torresDeHanoi(n - 1, origen, auxiliar, destino);
+  pasos.push([origen, destino]);
+  torresDeHanoi(n - 1, auxiliar, destino, origen);
+}
+
+torresDeHanoi(numDiscos, "A", "C", "B");
+
+async function animarMovimientos() {
+  for (let [origen, destino] of pasos) {
+    await new Promise(resolve => setTimeout(resolve, 600));
+    const torreOrigen = torres[origen];
+    const torreDestino = torres[destino];
+    const disco = torreOrigen.querySelector(".disk:last-child");
+    if (disco) {
+      torreDestino.appendChild(disco);
+    }
+  }
+}
+
+animarMovimientos();
