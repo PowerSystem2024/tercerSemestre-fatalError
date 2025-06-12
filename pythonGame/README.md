@@ -1,7 +1,7 @@
 # Top Down Shooter - Proyecto Pygame
 
 ## Descripción
-Juego tipo "The Binding of Isaac" hecho en Python con Pygame. Modularizado para trabajo en equipo: cada nivel es un módulo independiente.
+Juego hecho en Python con Pygame. Modularizado para trabajo en equipo: cada nivel es un módulo independiente.
 
 ---
 
