@@ -4,23 +4,20 @@ from entities.player import Player
 from entities.enemy import Enemy
 from entities.bullet import Bullet
 import random
-from niveles import nivel1, nivel2, nivel3, nivel4
 
 WINDOW_SIZE = (1280, 720)
 MAP_SIZE = (1920, 1080)
 
 class Game:
-    def __init__(self, user):
-        self.user = user
+    def __init__(self, username, level_manager, user_auth, initial_level_number, is_debug):
+        self.username = username
+        self.level_manager = level_manager
+        self.user_auth = user_auth
+        self.is_debug = is_debug # Almacenar el indicador de depuración
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         pygame.display.set_caption("Top Down Shooter")
         self.clock = pygame.time.Clock()
-        self.level = 1
-        self.max_level = 4
-        self.enemies_killed = 0
-        self.player = Player()
-        self.enemies = []
-        self.bullets = []
+        self.max_level = 4 # Esto también podría ser gestionado por level_manager
         self.running = True
         self.fullscreen = False
         self.background = pygame.image.load('assets/mapa/background1.png').convert()
@@ -30,18 +27,25 @@ class Game:
         pygame.mouse.set_visible(False)
         self.sangre_img = pygame.image.load('assets/muerte/sangre.png').convert_alpha()
         self.sangre_img = pygame.transform.scale(self.sangre_img, (60, 60))
-        self.sangre_list = []
-        self.cargar_nivel()
+        
+        # Inicializar el estado del juego para el primer nivel
+        self._initialize_game_state(initial_level_number)
 
-    def cargar_nivel(self):
-        if self.level == 1:
-            nivel1.cargar_nivel(self)
-        elif self.level == 2:
-            nivel2.cargar_nivel(self)
-        elif self.level == 3:
-            nivel3.cargar_nivel(self)
-        elif self.level == 4:
-            nivel4.cargar_nivel(self)
+    def _initialize_game_state(self, level_number):
+        self.level = level_number
+        self.enemies_killed = 0
+        self.player = Player() # Reiniciar jugador para el nuevo nivel
+        self.enemies = []
+        self.bullets = []
+        self.sangre_list = []
+
+        user_data = self.user_auth.get_user_data(self.username)
+        level_module = self.level_manager.load_level(self.level, user_data)
+        if level_module:
+            level_module.cargar_nivel(self) # Asumiendo que cada módulo de nivel tiene una función cargar_nivel
+        else:
+            print(f"Could not load level {self.level}. Exiting game.")
+            self.running = False
 
     def spawn_enemy_far_from_player(self):
         while True:
@@ -51,12 +55,24 @@ class Game:
                 return enemy
 
     def next_level(self):
-        self.level += 1
-        self.enemies_killed = 0
-        show_level_transition(self.screen, self.level)
-        self.cargar_nivel()
-        self.player.reset_position(MAP_SIZE)
-        self.sangre_list = []
+        next_level_module = self.level_manager.next_level(self.username)
+        if next_level_module:
+            show_level_transition(self.screen, self.level_manager.get_current_level_number())
+            self._initialize_game_state(self.level_manager.get_current_level_number())
+        else:
+            print("No more levels available.")
+            # Manejar la finalización del juego/pantalla de victoria aquí
+            from screens.game_over import show_victory
+            show_victory(self.screen)
+            self.running = False
+
+    def previous_level(self):
+        prev_level_num = self.current_level_number - 1
+        if prev_level_num > 0 and prev_level_num in self.available_levels:
+            self.update_player_progress(username, prev_level_num)
+            return self.available_levels[prev_level_num]
+        else:
+            print("Already at the first level or level not found.")
 
     def toggle_fullscreen(self):
         self.fullscreen = not self.fullscreen
@@ -77,6 +93,11 @@ class Game:
                         self.running = False
                     if event.key == pygame.K_F11:
                         self.toggle_fullscreen()
+                    if self.is_debug: # Usar self.is_debug
+                        if event.key == pygame.K_n:
+                            self.next_level()
+                        if event.key == pygame.K_p:
+                            self.previous_level()
                 self.player.handle_event(event, self.bullets)
             self.update()
             self.draw()
@@ -84,17 +105,19 @@ class Game:
                 from screens.game_over import show_game_over
                 restart = show_game_over(self.screen)
                 if restart:
-                    self.__init__(self.user)
+                    # Reiniciar estado del juego para la reanudación, manteniendo el nombre de usuario actual
+                    self._initialize_game_state(1) # Empezar desde el nivel 1 al reiniciar
                     show_level_transition(self.screen, self.level)
                 else:
                     self.running = False
             if self.enemies_killed >= 10:
-                if self.level < self.max_level:
-                    self.next_level()
-                else:
-                    from screens.game_over import show_victory
-                    show_victory(self.screen)
-                    self.running = False
+                # Esta lógica ahora será manejada por next_level que verifica LevelManager
+                # if self.level < self.max_level:
+                #     self.next_level()
+                # else:
+                #     from screens.game_over import show_victory
+                #     show_victory(self.screen)
+                #     self.running = False
 
     def update(self):
         self.player.update(MAP_SIZE)
@@ -103,15 +126,18 @@ class Game:
             for enemy in self.enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
                     self.sangre_list.append((enemy.rect.centerx-30, enemy.rect.centery-30))
-                    self.enemies.remove(enemy)
-                    self.bullets.remove(bullet)
+                    if enemy in self.enemies: # Se añadió verificación para evitar ValueError si el enemigo ya fue removido
+                        self.enemies.remove(enemy)
+                    if bullet in self.bullets: # Se añadió verificación para evitar ValueError si la bala ya fue removida
+                        self.bullets.remove(bullet)
                     self.enemies_killed += 1
                     break
-        for enemy in self.enemies:
+        for enemy in self.enemies[:]: # Iterar sobre una copia para permitir modificación
             enemy.update(self.player)
             if enemy.rect.colliderect(self.player.rect):
                 self.player.hit()
-                self.enemies.remove(enemy)
+                if enemy in self.enemies: # Se añadió verificación para evitar ValueError si el enemigo ya fue removido
+                    self.enemies.remove(enemy)
         while len(self.enemies) < (5 + self.level*2):
             self.enemies.append(self.spawn_enemy_far_from_player())
 
