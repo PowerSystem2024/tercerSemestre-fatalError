@@ -13,11 +13,11 @@ class Game:
         self.username = username
         self.level_manager = level_manager
         self.user_auth = user_auth
-        self.is_debug = is_debug
+        self.is_debug = is_debug # Almacenar el indicador de depuración
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         pygame.display.set_caption("Top Down Shooter")
         self.clock = pygame.time.Clock()
-        self.max_level = 4
+        self.max_level = 4 # Esto también podría ser gestionado por level_manager
         self.running = True
         self.fullscreen = False
         self.background = pygame.image.load('assets/mapa/background1.png').convert()
@@ -34,7 +34,7 @@ class Game:
     def _initialize_game_state(self, level_number):
         self.level = level_number
         self.enemies_killed = 0
-        self.player = Player()
+        self.player = Player() # Reiniciar jugador para el nuevo nivel
         self.enemies = []
         self.bullets = []
         self.sangre_list = []
@@ -45,7 +45,7 @@ class Game:
         user_data = self.user_auth.get_user_data(self.username)
         level_module = self.level_manager.load_level(self.level, user_data)
         if level_module:
-            level_module.cargar_nivel(self)
+            level_module.cargar_nivel(self) # Asumiendo que cada módulo de nivel tiene una función cargar_nivel
         else:
             print(f"Could not load level {self.level}. Exiting game.")
             self.running = False
@@ -71,6 +71,7 @@ class Game:
             self._initialize_game_state(self.level_manager.get_current_level_number())
         else:
             print("No more levels available.")
+            # Manejar la finalización del juego/pantalla de victoria aquí
             from screens.game_over import show_victory
             show_victory(self.screen)
             self.running = False
@@ -102,7 +103,7 @@ class Game:
                         self.running = False
                     if event.key == pygame.K_F11:
                         self.toggle_fullscreen()
-                    if self.is_debug:
+                    if self.is_debug: # Usar self.is_debug
                         if event.key == pygame.K_n:
                             self.next_level()
                         if event.key == pygame.K_p:
@@ -114,7 +115,8 @@ class Game:
                 from screens.game_over import show_game_over
                 restart = show_game_over(self.screen)
                 if restart:
-                    self._initialize_game_state(1)
+                    # Reiniciar estado del juego para la reanudación, manteniendo el nombre de usuario actual
+                    self._initialize_game_state(1) # Empezar desde el nivel 1 al reiniciar
                     show_level_transition(self.screen, self.level)
                 else:
                     self.running = False
@@ -136,9 +138,9 @@ class Game:
             for enemy in self.enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
                     self.sangre_list.append((enemy.rect.centerx-30, enemy.rect.centery-30))
-                    if enemy in self.enemies:
+                    if enemy in self.enemies: # Se añadió verificación para evitar ValueError si el enemigo ya fue removido
                         self.enemies.remove(enemy)
-                    if bullet in self.bullets:
+                    if bullet in self.bullets: # Se añadió verificación para evitar ValueError si la bala ya fue removida
                         self.bullets.remove(bullet)
                     self.enemies_killed += 1
                     break
@@ -153,11 +155,11 @@ class Game:
                 break
 
         # Actualizar enemigos normales
-        for enemy in self.enemies[:]:
+        for enemy in self.enemies[:]: # Iterar sobre una copia para permitir modificación
             enemy.update(self.player)
             if enemy.rect.colliderect(self.player.rect):
                 self.player.hit()
-                if enemy in self.enemies:
+                if enemy in self.enemies: # Se añadió verificación para evitar ValueError si el enemigo ya fue removido
                     self.enemies.remove(enemy)
 
         # Actualizar jefe
