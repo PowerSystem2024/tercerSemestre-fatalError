@@ -1,8 +1,11 @@
 import pygame
 import random
+import math
+import os
 from itertools import repeat
 from auth import UserAuth
 import login
+from systems.level_manager import LevelManager
 
 #inicializamos pygame
 pygame.init()
@@ -14,12 +17,14 @@ current_user = login.main()
 if not current_user:
     exit()
 
+# Inicializar el gestor de niveles
+level_manager = LevelManager()
 
 # CONSTANTES:
 
 
 #modo debug 
-IS_DEBUG = False
+IS_DEBUG = True
 
 #colores
 WHITE = (255, 255, 255)
@@ -88,13 +93,31 @@ WINDOW = SHAKE_WINDOW.copy()
 clock = pygame.time.Clock()
 
 #fuente
-text_font = pygame.font.Font("assets/font.otf", 32)
+FONT_PATH = "assets/font.otf"  # Cambiamos la ruta relativa
+FONT = pygame.font.Font(FONT_PATH, 32)
+SMALL_FONT = pygame.font.Font(FONT_PATH, 24)
 
 #contenedores globales
 #objetos dibujables 
 objects = [] 
 #desplazamiento para temblor de pantalla 
 offset = repeat((0, 0))
+#lista de powerups
+powerups = []
+#balas
+bullets = []
+#jugador
+player = None
+#enemigos
+enemies = []
+#particulas
+particles = []
+#estado del juego
+score = 0
+has_game_started = False
+is_game_over = False
+is_victory = False
+current_level = 1
 
 
 
@@ -324,12 +347,15 @@ class Enemy(Entity):
 
 
 #cursor para apuntar 
-global player, bullets
 target = Object(100, 100, CURSOR_MIN_SIZE, CURSOR_MIN_SIZE, CURSOR)
+objects.append(target)  # Agregamos el target a la lista de objetos
 #lista de todos los enemigos
 enemies = []
 #lista de efecto de particulas
 particles = []
+#jugador y balas
+player = None
+bullets = []
 
 #variables de estado del juego 
 has_game_started = False
@@ -347,17 +373,54 @@ def load_high_score():
     high_score = auth.get_high_score(current_user)
 
 
+def load_level(level_number):
+    """Carga un nivel específico"""
+    global player, enemies, bullets, particles, powerups, score, has_game_started, is_game_over
+    
+    # Limpiar el estado actual
+    enemies.clear()
+    bullets.clear()
+    particles.clear()
+    powerups.clear()
+    score = 0
+    has_game_started = True
+    is_game_over = False
+    
+    # Cargar el nivel usando el level_manager
+    if level_manager.load_level(level_number):
+        # Crear jugador en el centro de la pantalla
+        player = Player(WINDOW_SIZE[0] / 2 - 37.5, WINDOW_SIZE[1] / 2 - 37.5, 75, 75, PLAYER_TILESET, PLAYER_SPEED)
+        player.collider = [player.width / 2.5, player.height / 2]
+        print(f"Nivel {level_number} cargado correctamente")
+    else:
+        print(f"Error al cargar el nivel {level_number}")
+        # Si hay error, volver al nivel 1
+        level_manager.load_level(1)
+
+
 def start():
     #inicializar/reinicial el juego 
-    global player, bullets, score
-
-    #crear jugador en el medio de la pantalla 
+    global score, has_game_started, is_game_over, objects, powerups, is_victory, player, bullets, enemies, particles, target
+    score = 0
+    has_game_started = False  # Cambiamos esto a False para que espere a ESPACIO
+    is_game_over = False
+    is_victory = False
+    objects.clear()
+    powerups.clear()
+    bullets.clear()
+    enemies.clear()
+    particles.clear()
+    
+    # Recrear el target
+    target = Object(100, 100, CURSOR_MIN_SIZE, CURSOR_MIN_SIZE, CURSOR)
+    objects.append(target)
+    
+    # Crear jugador en el centro de la pantalla
     player = Player(WINDOW_SIZE[0] / 2 - 37.5, WINDOW_SIZE[1] / 2 - 37.5, 75, 75, PLAYER_TILESET, PLAYER_SPEED)
     player.collider = [player.width / 2.5, player.height / 2]
-
-    bullets = []
-    score = 0
+    
     load_high_score()
+    print("Juego listo - Presiona ESPACIO para comenzar")
 
 
 def game_over():
@@ -393,8 +456,7 @@ def shoot():
 
 def restart():
     #reiniciar el juego por completo 
-    global player, enemies, bullets, particles, objects, score, is_game_over
-
+    global player, enemies, bullets, particles, objects, score, is_game_over, powerups
     objects.remove(player)
     start()
 
@@ -430,12 +492,35 @@ def check_collisions(obj1, obj2):
 
 
 def handle_event(evt):
-    #manejamos eventos de teclado y mouse 
+    global has_game_started, is_game_over, player, bullets, current_level
+    
     if evt.type == pygame.QUIT:
+        pygame.quit()
         exit()
-    elif evt.type == pygame.KEYDOWN:
+        
+    if evt.type == pygame.KEYDOWN:
+        if evt.key == pygame.K_SPACE and not has_game_started and not is_game_over:
+            has_game_started = True
+            print("¡Juego iniciado!")
+        elif evt.key == pygame.K_r and is_game_over:
+            is_game_over = False
+            start()
+        elif evt.key == pygame.K_n and IS_DEBUG:  # Cambiar al siguiente nivel
+            if current_level < 4:
+                current_level += 1
+                print(f"Cambiando al nivel {current_level}")
+                start()
+            else:
+                print("Ya estás en el último nivel")
+        elif evt.key == pygame.K_p and IS_DEBUG:  # Cambiar al nivel anterior
+            if current_level > 1:
+                current_level -= 1
+                print(f"Cambiando al nivel {current_level}")
+                start()
+            else:
+                print("Ya estás en el primer nivel")
         #movimientos del jugador 
-        if evt.key == pygame.K_a:
+        elif evt.key == pygame.K_a:
             player.velocity[0] = -player.speed
         elif evt.key == pygame.K_d:
             player.velocity[0] = player.speed
@@ -443,12 +528,6 @@ def handle_event(evt):
             player.velocity[1] = -player.speed
         elif evt.key == pygame.K_s:
             player.velocity[1] = player.speed
-        #controles del juego
-        elif evt.key == pygame.K_r:
-            restart()
-        elif evt.key == pygame.K_SPACE:
-            global has_game_started
-            has_game_started = True
     elif evt.type == pygame.KEYUP:
         #detener movimiento del jugador 
         if evt.key == pygame.K_a or evt.key == pygame.K_d:
@@ -463,7 +542,7 @@ def display_ui():
     #mostramos interfaz
     if not has_game_started:
         #pantalla de inicio
-        game_over_text = text_font.render(START_GAME_TEXT, True, BLACK)
+        game_over_text = FONT.render(START_GAME_TEXT, True, BLACK)
         WINDOW.blit(game_over_text, (WINDOW_SIZE[0] / 2 - game_over_text.get_width() / 2,
                                      WINDOW_SIZE[1] / 2 - game_over_text.get_height() / 2))
         return
@@ -475,16 +554,16 @@ def display_ui():
         WINDOW.blit(img, (i * 50 + WINDOW_SIZE[0] / 2 - player.max_health * 25, 25))
 
     #mostramos puntacion actual 
-    score_text = text_font.render(f'Score: {score}', True, BLACK)
+    score_text = FONT.render(f'Score: {score}', True, BLACK)
     WINDOW.blit(score_text, (score_text.get_width() / 2, 0 + 25))
 
     #mostramos puntacion maxima 
-    high_score_text = text_font.render(f'High Score: {high_score}', True, BLACK)
+    high_score_text = FONT.render(f'High Score: {high_score}', True, BLACK)
     WINDOW.blit(high_score_text, (WINDOW_SIZE[0] - high_score_text.get_width() - 75, 0 + 25))
 
     #pantalla de cuando perdes
     if is_game_over:
-        game_over_text = text_font.render(GAME_OVER_TEXT, True, BLACK)
+        game_over_text = FONT.render(GAME_OVER_TEXT, True, BLACK)
         WINDOW.blit(game_over_text, (WINDOW_SIZE[0] / 2 - game_over_text.get_width() / 2,
                                      WINDOW_SIZE[1] / 2 - game_over_text.get_height() / 2))
 
@@ -584,7 +663,8 @@ while True:
     #MANEJO DE EVENTOS
     for event in pygame.event.get():
         #procesar input del usuario
-        handle_event(event)
+        if handle_event(event):
+            break
 
     #MANTENER EL JUGADOR DENTRO DE LOSLIMITES 
     #dentro de x

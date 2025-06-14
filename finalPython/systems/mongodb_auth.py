@@ -3,6 +3,7 @@ from typing import Optional, Dict
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+import hashlib
 
 # Cargar variables de entorno desde .env
 load_dotenv()
@@ -25,17 +26,18 @@ class MongoDBAuth:
 
     def register(self, username: str, password: str) -> Dict[str, str]:
         """Registrar un nuevo usuario"""
-        try:
-            self.users.insert_one({
-                'username': username,
-                'password': password,  # En producción, esto debería estar hasheado
-                'high_score': 0,
-                'created_at': datetime.utcnow(),
-                'last_login': datetime.utcnow()
-            })
-            return {"status": "success", "message": "¡Usuario registrado exitosamente!"}
-        except Exception as e:
-            return {"status": "error", "message": "¡El usuario ya existe!"}
+        if self.user_exists(username):
+            return {"status": "error", "message": "¡Usuario ya existe!"}
+        
+        hashed_password = self._hash_password(password)
+        self.users.insert_one({
+            'username': username,
+            'password': hashed_password,
+            'high_score': 0,
+            'created_at': datetime.utcnow(),
+            'last_login': datetime.utcnow()
+        })
+        return {"status": "success", "message": "¡Usuario registrado exitosamente!"}
 
     def login(self, username: str, password: str) -> Dict[str, str]:
         """Iniciar sesión"""
@@ -43,10 +45,9 @@ class MongoDBAuth:
         if not user:
             return {"status": "error", "message": "¡El usuario no existe!"}
         
-        if user['password'] != password:  # En producción, comparar hashes
+        if not self._verify_password(password, user['password']):
             return {"status": "error", "message": "¡Contraseña incorrecta!"}
         
-        # Actualizar último login
         self.users.update_one(
             {'username': username},
             {'$set': {'last_login': datetime.utcnow()}}
@@ -79,9 +80,25 @@ class MongoDBAuth:
 
     def close(self):
         """Cerrar la conexión con MongoDB"""
-        self.client.close()
+        try:
+            if hasattr(self, 'client'):
+                self.client.close()
+        except:
+            pass  # Ignorar errores durante el cierre
 
     def __del__(self):
         """Cerrar conexión con MongoDB al destruir el objeto"""
         if hasattr(self, 'mongo_auth'):
-            self.mongo_auth.close() 
+            self.mongo_auth.close()
+
+    def user_exists(self, username: str) -> bool:
+        """Verificar si el usuario ya existe"""
+        return self.users.find_one({'username': username}) is not None
+
+    def _hash_password(self, password: str) -> str:
+        """Hashear la contraseña"""
+        return hashlib.sha256(password.encode()).hexdigest()
+
+    def _verify_password(self, password: str, hashed: str) -> bool:
+        """Verificar la contraseña hasheada"""
+        return self._hash_password(password) == hashed 

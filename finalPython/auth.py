@@ -5,7 +5,6 @@ from systems.mongodb_auth import MongoDBAuth
 
 class UserAuth:
     def __init__(self):
-        # Mantener el archivo JSON para compatibilidad
         self.users_file = "usuarios.json"
         self.current_user = None
         
@@ -13,23 +12,28 @@ class UserAuth:
         self.mongo_auth = MongoDBAuth()
         
         # Cargar usuarios existentes de JSON a MongoDB si es necesario
-        self._migrate_users_if_needed()
+        self.migrate_users()
 
-    def _migrate_users_if_needed(self) -> None:
-        """Migrar usuarios de JSON a MongoDB si es necesario"""
-        if os.path.exists(self.users_file):
-            with open(self.users_file, "r") as f:
+    def migrate_users(self):
+        try:
+            # Intentar cargar usuarios desde el archivo JSON
+            with open(self.users_file, 'r') as f:
                 json_users = json.load(f)
                 
             # Migrar cada usuario a MongoDB
             for username, user_data in json_users.items():
-                try:
+                if not self.mongo_auth.user_exists(username):
                     self.mongo_auth.register(username, user_data["password"])
                     if "high_score" in user_data:
                         self.mongo_auth.update_high_score(username, user_data["high_score"])
-                except:
-                    # Si el usuario ya existe en MongoDB, lo ignoramos
-                    pass
+            
+            # Si la migración fue exitosa, renombrar el archivo
+            if os.path.exists(self.users_file):
+                os.rename(self.users_file, f"{self.users_file}.bak")
+        except FileNotFoundError:
+            pass  # No hay usuarios para migrar
+        except Exception as e:
+            print(f"Error durante la migración: {e}")
 
     def register(self, username: str, password: str) -> Dict[str, str]:
         """Registrar un nuevo usuario"""
@@ -57,9 +61,11 @@ class UserAuth:
     def logout(self) -> None:
         """Cerrar sesión"""
         self.current_user = None
-        self.mongo_auth.logout()
 
     def __del__(self):
         """Cerrar conexión con MongoDB al destruir el objeto"""
-        if hasattr(self, 'mongo_auth'):
-            self.mongo_auth.close() 
+        try:
+            if hasattr(self, 'mongo_auth'):
+                self.mongo_auth.close()
+        except:
+            pass  # Ignorar errores durante el cierre 
