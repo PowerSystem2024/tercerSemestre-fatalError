@@ -111,13 +111,12 @@ class Game:
                 else:
                     self.running = False
             if self.enemies_killed >= 10:
-                # Esta lógica ahora será manejada por next_level que verifica LevelManager
-                # if self.level < self.max_level:
-                #     self.next_level()
-                # else:
-                #     from screens.game_over import show_victory
-                #     show_victory(self.screen)
-                #     self.running = False
+                if self.level < self.max_level:
+                    self.next_level()
+                else:
+                    from screens.game_over import show_victory
+                    show_victory(self.screen)
+                    self.running = False
 
     def update(self):
         self.player.update(MAP_SIZE)
