@@ -75,4 +75,11 @@ Desktop.ini
 *.sqlite3
 
 # User data
-/db/users.json 
+/db/users.json
+
+# Environment variables
+.env
+
+# User data
+usuarios.json
+save_file.txt 
