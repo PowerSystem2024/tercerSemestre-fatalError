@@ -1,7 +1,7 @@
 import pygame
 from screens.level_transition import show_level_transition
 from entities.player import Player
-from entities.enemy import Enemy
+from entities.enemy import Enemy, Enemy2
 from entities.bullet import Bullet
 import random
 from niveles import nivel1, nivel2, nivel3, nivel4
@@ -31,6 +31,9 @@ class Game:
         self.sangre_img = pygame.image.load('assets/muerte/sangre.png').convert_alpha()
         self.sangre_img = pygame.transform.scale(self.sangre_img, (60, 60))
         self.sangre_list = []
+        self.boss = None
+        self.boss_spawned = False
+        self.level_completed = False
         self.cargar_nivel()
 
     def cargar_nivel(self):
@@ -45,7 +48,14 @@ class Game:
 
     def spawn_enemy_far_from_player(self):
         while True:
-            enemy = Enemy(self.level, MAP_SIZE)
+            if self.level == 2:
+                # 50% probabilidad de cada tipo
+                if random.random() < 0.5:
+                    enemy = Enemy(self.level, MAP_SIZE)
+                else:
+                    enemy = Enemy2(self.level, MAP_SIZE)
+            else:
+                enemy = Enemy(self.level, MAP_SIZE)
             dist = ((enemy.rect.centerx - self.player.rect.centerx) ** 2 + (enemy.rect.centery - self.player.rect.centery) ** 2) ** 0.5
             if dist > 400:
                 return enemy
@@ -53,6 +63,9 @@ class Game:
     def next_level(self):
         self.level += 1
         self.enemies_killed = 0
+        self.boss = None
+        self.boss_spawned = False
+        self.level_completed = False
         show_level_transition(self.screen, self.level)
         self.cargar_nivel()
         self.player.reset_position(MAP_SIZE)
@@ -88,7 +101,9 @@ class Game:
                     show_level_transition(self.screen, self.level)
                 else:
                     self.running = False
-            if self.enemies_killed >= 10:
+            if self.level == 3 and self.boss and self.boss.lives <= 0:
+                self.next_level()
+            elif self.enemies_killed >= 10 and not self.boss_spawned:
                 if self.level < self.max_level:
                     self.next_level()
                 else:
@@ -100,6 +115,7 @@ class Game:
         self.player.update(MAP_SIZE)
         for bullet in self.bullets[:]:
             bullet.update()
+            # Verificar colisiones con enemigos normales
             for enemy in self.enemies[:]:
                 if bullet.rect.colliderect(enemy.rect):
                     self.sangre_list.append((enemy.rect.centerx-30, enemy.rect.centery-30))
@@ -107,13 +123,32 @@ class Game:
                     self.bullets.remove(bullet)
                     self.enemies_killed += 1
                     break
+            # Verificar colisiones con el jefe
+            if self.boss and bullet.rect.colliderect(self.boss.rect):
+                self.boss.lives -= 1
+                self.bullets.remove(bullet)
+                if self.boss.lives <= 0:
+                    self.boss = None
+                    self.level_completed = True
+                break
+        # Actualizar enemigos normales
         for enemy in self.enemies:
             enemy.update(self.player)
             if enemy.rect.colliderect(self.player.rect):
                 self.player.hit()
                 self.enemies.remove(enemy)
-        while len(self.enemies) < (5 + self.level*2):
-            self.enemies.append(self.spawn_enemy_far_from_player())
+        # Actualizar jefe
+        if self.boss:
+            self.boss.update(self.player)
+            if self.boss.rect.colliderect(self.player.rect):
+                self.player.hit()
+        # Spawnear más enemigos si es necesario
+        if self.level != 3 or not self.boss_spawned:
+            while len(self.enemies) < (5 + self.level*2):
+                self.enemies.append(self.spawn_enemy_far_from_player())
+        # Actualizar nivel 3
+        if self.level == 3:
+            nivel3.update_level(self)
 
     def draw(self):
         cam_x = max(0, min(self.player.rect.centerx - WINDOW_SIZE[0]//2, MAP_SIZE[0] - WINDOW_SIZE[0]))
@@ -125,6 +160,8 @@ class Game:
         self.player.draw(map_surface)
         for enemy in self.enemies:
             enemy.draw(map_surface)
+        if self.boss:
+            self.boss.draw(map_surface)
         for bullet in self.bullets:
             bullet.draw(map_surface)
         self.player.draw_lives(map_surface)
