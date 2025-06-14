@@ -47,32 +47,3 @@ class Enemy:
     def draw(self, surface):
         surface.blit(self.image, self.rect) 
         
-
-class EnemyNivel3(Enemy):
-    def __init__(self, level, map_size, pos=None):
-        # Cambiamos el spritesheet antes de llamar a super().__init__
-        self.spritesheet = SpriteSheet('assets/enemigos/enemigos_nivel3.png', 'assets/enemigos/enemigos_nivel3.plist', scale=0.4)
-        
-        # Creamos animaciones específicas para este spritesheet
-        self.animations = {
-            'down': self.spritesheet.get_images_by_range(0, 4),
-            'left': self.spritesheet.get_images_by_range(4, 8),
-            'right': self.spritesheet.get_images_by_range(8, 12),
-            'up': self.spritesheet.get_images_by_range(12, 16)
-        }
-
-        # Continuamos con la inicialización manual (sin usar super())
-        self.direction = 'down'
-        self.anim_index = 0
-        self.anim_timer = 0
-        self.anim_speed = 0.12
-        self.image = self.animations[self.direction][self.anim_index]
-        self.rect = self.image.get_rect()
-
-        if pos:
-            self.rect.center = pos
-        else:
-            self.rect.x = random.randint(0, map_size[0] - self.rect.width)
-            self.rect.y = random.randint(0, map_size[1] - self.rect.height)
-
-        self.speed = 1.5  # Más lento que el Enemy original

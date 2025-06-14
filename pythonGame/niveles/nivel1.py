@@ -2,6 +2,9 @@ from entities.enemy import Enemy
 
 def cargar_nivel(game):
     game.enemies = []
-    for _ in range(5 + game.level*2):
+    cantidad = 9 + game.level * 2
+
+    for _ in range(cantidad):
         enemy = game.spawn_enemy_far_from_player()
-        game.enemies.append(enemy) 
+        enemy.speed = 1.5  # velocidad reducida (por defecto era 2 + level)
+        game.enemies.append(enemy)

@@ -127,6 +127,7 @@ class Game:
             enemy.draw(map_surface)
         for bullet in self.bullets:
             bullet.draw(map_surface)
+            
         self.player.draw_lives(map_surface)
         self.screen.blit(map_surface, (0,0), camera)
         mx, my = pygame.mouse.get_pos()
