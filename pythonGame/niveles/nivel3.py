@@ -22,3 +22,5 @@ def update_level(game):
     # Actualizar el jefe si existe
     if game.boss:
         game.boss.update(game.player) 
+    
+    #esto es lo ultimo que hicimos dia miercoles 18 de junio
