@@ -5,7 +5,7 @@ from entities.enemy import Enemy, Enemy2
 from entities.bullet import Bullet
 import random
 
-WINDOW_SIZE = (1280, 720)
+WINDOW_SIZE = (1920, 1020)
 MAP_SIZE = (1920, 1080)
 
 class Game:
@@ -20,7 +20,7 @@ class Game:
         self.max_level = 4
         self.running = True
         self.fullscreen = False
-        self.background = pygame.image.load('assets/mapa/background1.png').convert()
+        self.background = pygame.image.load('assets/mapa/mapaUno.png').convert()
         self.background = pygame.transform.scale(self.background, MAP_SIZE)
         self.cursor_img = pygame.image.load('assets/cursor/cursor.png').convert_alpha()
         self.cursor_img = pygame.transform.scale(self.cursor_img, (40, 40))

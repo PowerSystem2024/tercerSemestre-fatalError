@@ -22,7 +22,7 @@ FONT_LARGE = pygame.font.Font(None, 50)  # Ligeramente más pequeña
 
 def show_login(screen, user_auth):
     # Cargar y escalar la imagen de fondo
-    background_image = pygame.image.load('assets/mapa/background1.png').convert()
+    background_image = pygame.image.load('assets/mapa/MENU.png').convert()
     background_image = pygame.transform.scale(background_image, screen.get_size())
 
     # Rectángulos de los elementos (ajustados para mejor espaciado)
