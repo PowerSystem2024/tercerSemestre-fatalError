@@ -120,7 +120,7 @@ class Game:
                     self.running = False
             if self.level == 3 and self.boss and self.boss.lives <= 0:
                 self.next_level()
-            elif self.enemies_killed >= 10 and not self.boss_spawned:
+            elif self.enemies_killed >= 20 and not self.boss_spawned:
                 if self.level < self.max_level:
                     self.next_level()
                 else:
@@ -150,6 +150,9 @@ class Game:
                 if self.boss.lives <= 0:
                     self.boss = None
                     self.level_completed = True
+                    # Si estamos en el nivel 3, pasar al siguiente nivel cuando se mata al jefe
+                    if self.level == 3:
+                        self.next_level()
                 break
 
         # Actualizar enemigos normales
