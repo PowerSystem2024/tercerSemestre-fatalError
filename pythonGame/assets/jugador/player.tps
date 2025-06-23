@@ -9,7 +9,7 @@
         <array>
             <struct type="AutoSDSettings">
                 <key>scale</key>
-                <double>1</double>
+                <double>0.5</double>
                 <key>extension</key>
                 <string></string>
                 <key>spriteFilter</key>
@@ -32,7 +32,7 @@
         <key>dpi</key>
         <uint>72</uint>
         <key>dataFormat</key>
-        <string>spritesheet-only</string>
+        <string>cocos2d-x</string>
         <key>textureFileName</key>
         <filename></filename>
         <key>flipPVR</key>
@@ -80,9 +80,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>4096</int>
             <key>height</key>
-            <int>2048</int>
+            <int>4096</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -94,7 +94,7 @@
         <key>algorithmSettings</key>
         <struct type="AlgorithmSettings">
             <key>algorithm</key>
-            <enum type="AlgorithmSettings::AlgorithmId">MaxRects</enum>
+            <enum type="AlgorithmSettings::AlgorithmId">Grid</enum>
             <key>freeSizeMode</key>
             <enum type="AlgorithmSettings::AlgorithmFreeSizeMode">Best</enum>
             <key>sizeConstraints</key>
@@ -120,7 +120,19 @@
             </struct>
         </struct>
         <key>dataFileNames</key>
-        <map type="GFileNameMap"/>
+        <map type="GFileNameMap">
+            <key>data</key>
+            <struct type="DataFile">
+                <key>name</key>
+                <filename>player.plist</filename>
+            </struct>
+            <key>header</key>
+            <key>source</key>
+            <struct type="DataFile">
+                <key>name</key>
+                <filename></filename>
+            </struct>
+        </map>
         <key>multiPackMode</key>
         <enum type="SettingsBase::MultiPackMode">MultiPackOff</enum>
         <key>forceIdenticalLayout</key>
@@ -135,7 +147,7 @@
             <string></string>
         </struct>
         <key>autoAliasEnabled</key>
-        <false/>
+        <true/>
         <key>trimSpriteNames</key>
         <false/>
         <key>prependSmartFolderName</key>
@@ -155,7 +167,7 @@
             <key>trimMargin</key>
             <uint>1</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>tracerTolerance</key>
             <int>200</int>
             <key>heuristicMask</key>
@@ -167,20 +179,20 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">DownDe.png</key>
-            <key type="filename">DownIz.png</key>
-            <key type="filename">RunDe.png</key>
-            <key type="filename">RunDeInv.png</key>
-            <key type="filename">RunIz.png</key>
-            <key type="filename">RunIzInv.png</key>
-            <key type="filename">Stand.png</key>
-            <key type="filename">UpDe.png</key>
-            <key type="filename">UpIz.png</key>
+            <key type="filename">1.png</key>
+            <key type="filename">2.png</key>
+            <key type="filename">3.png</key>
+            <key type="filename">4.png</key>
+            <key type="filename">5.png</key>
+            <key type="filename">6.png</key>
+            <key type="filename">7.png</key>
+            <key type="filename">8.png</key>
+            <key type="filename">9.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
                 <key>spriteScale</key>
-                <double>1</double>
+                <double>0.4</double>
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
@@ -197,7 +209,15 @@
             <struct type="SpriteSheet">
                 <key>files</key>
                 <array>
-                    <filename>.</filename>
+                    <filename>1.png</filename>
+                    <filename>2.png</filename>
+                    <filename>3.png</filename>
+                    <filename>4.png</filename>
+                    <filename>5.png</filename>
+                    <filename>6.png</filename>
+                    <filename>7.png</filename>
+                    <filename>8.png</filename>
+                    <filename>9.png</filename>
                 </array>
             </struct>
         </map>

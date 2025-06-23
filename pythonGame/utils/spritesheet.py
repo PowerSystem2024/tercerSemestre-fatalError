@@ -13,14 +13,22 @@ class SpriteSheet:
         frames = []
         frame_names = []
         dicts = root.findall('.//dict')
-        if len(dicts) < 2:
+        frames_dict = None
+        for d in dicts:
+            children = list(d)
+            for i, elem in enumerate(children):
+                if elem.tag == 'key' and elem.text == 'frames':
+                    frames_dict = children[i+1]
+                    break
+            if frames_dict is not None:
+                break
+        if frames_dict is None:
             return frames, frame_names
-        frames_dict = dicts[1]
         children = list(frames_dict)
         i = 0
         while i < len(children):
             key_elem = children[i]
-            if key_elem.tag == 'key' and key_elem.text.startswith('frame_'):
+            if key_elem.tag == 'key':
                 frame_name = key_elem.text
                 frame_data_dict = children[i+1]
                 for j in range(len(frame_data_dict)):

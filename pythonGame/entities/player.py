@@ -5,18 +5,19 @@ from entities.bullet import Bullet
 
 class Player:
     def __init__(self):
-        self.spritesheet = SpriteSheet('assets/jugador/jugador.png', 'assets/jugador/jugador.plist', scale=0.4)
+        self.spritesheet = SpriteSheet('assets/jugador/player.png', 'assets/jugador/player.plist', scale=0.15)
         # Animaciones: asumo 4 direcciones, 4 frames cada una (ajustar si es necesario)
         self.animations = {
-            'down': self.spritesheet.get_images_by_range(0, 4),
-            'left': self.spritesheet.get_images_by_range(4, 8),
-            'right': self.spritesheet.get_images_by_range(8, 12),
-            'up': self.spritesheet.get_images_by_range(12, 16)
+            'idle': [self.spritesheet.get_image(0)],                # 1.png
+            'right': [self.spritesheet.get_image(1), self.spritesheet.get_image(2)],  # 2.png, 3.png
+            'left': [self.spritesheet.get_image(3), self.spritesheet.get_image(4)],   # 4.png, 5.png
+            'up': [self.spritesheet.get_image(5), self.spritesheet.get_image(6)],     # 6.png, 7.png
+            'down': [self.spritesheet.get_image(7), self.spritesheet.get_image(8)]    # 8.png, 9.png
         }
         self.direction = 'down'
         self.anim_index = 0
         self.anim_timer = 0
-        self.anim_speed = 0.15
+        self.anim_speed = 0.2
         self.image = self.animations[self.direction][self.anim_index]
         self.rect = self.image.get_rect(center=(960, 540))
         self.speed = 6
@@ -61,9 +62,15 @@ class Player:
             if self.anim_timer >= 1:
                 self.anim_index = (self.anim_index + 1) % len(self.animations[self.direction])
                 self.anim_timer = 0
+            self.image = self.animations[self.direction][self.anim_index]
         else:
+            # Idle: siempre mostrar el frame 0, invertido si la última dirección fue izquierda
+            idle_img = self.animations['idle'][0]
+            if self.direction == 'left':
+                self.image = pygame.transform.flip(idle_img, True, False)
+            else:
+                self.image = idle_img
             self.anim_index = 0
-        self.image = self.animations[self.direction][self.anim_index]
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
