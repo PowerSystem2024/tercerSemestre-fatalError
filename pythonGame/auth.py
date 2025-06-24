@@ -43,5 +43,17 @@ class UserAuth:
     def update_current_level(self, username, level):
         return self.db_auth.update_current_level(username, level)
 
+    def get_top_10_scores(self):
+        """Obtener el top 10 de puntuaciones"""
+        return self.db_auth.get_top_10_scores()
+
+    def get_best_score(self):
+        """Obtener la mejor puntuación global"""
+        return self.db_auth.get_best_score()
+
+    def get_user_rank(self, username):
+        """Obtener la posición del usuario en el ranking"""
+        return self.db_auth.get_user_rank(username)
+
     def close(self):
         self.db_auth.close() 

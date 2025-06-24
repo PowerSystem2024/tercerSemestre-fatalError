@@ -35,5 +35,34 @@ class MongoDBAuth:
         self.users_collection.update_one({"username": username}, {"$set": {"current_level": level}})
         return True, "Current level updated."
 
+    def get_top_10_scores(self):
+        """Obtener el top 10 de puntuaciones de todos los jugadores"""
+        top_scores = list(self.users_collection.find(
+            {"high_score": {"$gt": 0}},  # Solo usuarios con puntuación > 0
+            {"username": 1, "high_score": 1, "_id": 0}
+        ).sort("high_score", -1).limit(10))
+        return top_scores
+
+    def get_best_score(self):
+        """Obtener la mejor puntuación global"""
+        best_score_doc = self.users_collection.find_one(
+            {"high_score": {"$gt": 0}},
+            {"username": 1, "high_score": 1, "_id": 0},
+            sort=[("high_score", -1)]
+        )
+        return best_score_doc if best_score_doc else {"username": "N/A", "high_score": 0}
+
+    def get_user_rank(self, username):
+        """Obtener la posición del usuario en el ranking global"""
+        user_data = self.get_user_data(username)
+        if not user_data or user_data.get("high_score", 0) == 0:
+            return None
+        
+        # Contar cuántos usuarios tienen puntuación mayor
+        higher_scores = self.users_collection.count_documents({
+            "high_score": {"$gt": user_data["high_score"]}
+        })
+        return higher_scores + 1  # +1 porque el ranking empieza en 1
+
     def close(self):
         self.client.close() 
