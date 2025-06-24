@@ -1,7 +1,7 @@
 import pygame
 from screens.level_transition import show_level_transition
 from entities.player import Player
-from entities.enemy import Enemy, Enemy2, Enemy3
+from entities.enemy import Enemy, Enemy2
 from entities.bullet import Bullet
 import random
 
@@ -59,8 +59,6 @@ class Game:
                     enemy = Enemy(self.level, MAP_SIZE)
                 else:
                     enemy = Enemy2(self.level, MAP_SIZE)
-            elif self.level == 3:
-                enemy = Enemy3(self.level, MAP_SIZE)
             else:
                 enemy = Enemy(self.level, MAP_SIZE)
             dist = ((enemy.rect.centerx - self.player.rect.centerx) ** 2 + (enemy.rect.centery - self.player.rect.centery) ** 2) ** 0.5
@@ -97,12 +95,6 @@ class Game:
         show_level_transition(self.screen, self.level)
         while self.running:
             self.clock.tick(60)
-            
-            # Calcular offset de la cámara
-            cam_x = max(0, min(self.player.rect.centerx - WINDOW_SIZE[0]//2, MAP_SIZE[0] - WINDOW_SIZE[0]))
-            cam_y = max(0, min(self.player.rect.centery - WINDOW_SIZE[1]//2, MAP_SIZE[1] - WINDOW_SIZE[1]))
-            camera_offset = (cam_x, cam_y)
-            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -116,7 +108,7 @@ class Game:
                             self.next_level()
                         if event.key == pygame.K_p:
                             self.previous_level()
-                self.player.handle_event(event, self.bullets, camera_offset)
+                self.player.handle_event(event, self.bullets)
             self.update()
             self.draw()
             if self.player.lives <= 0:
@@ -179,11 +171,7 @@ class Game:
                 self.player.hit()
 
         # Spawnear más enemigos si es necesario
-        if self.level == 3:
-            if not self.boss_spawned:
-                while len(self.enemies) < (5 + self.level*2):
-                    self.enemies.append(self.spawn_enemy_far_from_player())
-        else:
+        if self.level != 3 or not self.boss_spawned:
             while len(self.enemies) < (5 + self.level*2):
                 self.enemies.append(self.spawn_enemy_far_from_player())
 
