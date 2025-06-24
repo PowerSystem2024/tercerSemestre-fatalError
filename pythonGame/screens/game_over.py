@@ -1,10 +1,9 @@
 import pygame
 import time
 
-fondo_img = pygame.image.load("assets/transicionNiveles/fondonegro3.jpg")  
-fondo_img = pygame.transform.scale(fondo_img, (1600, 800))  
-
 def show_game_over(screen):
+    global fondo_img
+    fondo_img = pygame.transform.scale(pygame.image.load("assets/transicionNiveles/fondonegro3.jpg"), (screen.get_width(), screen.get_height()))
     # Renderizar el texto
     font = pygame.font.Font("assets/transicionNiveles/font2.ttf", 120)
     text = font.render('GAME OVER', True, (255,0,0))
@@ -32,6 +31,8 @@ def show_game_over(screen):
     return False
 
 def show_victory(screen):
+    global fondo_img
+    fondo_img = pygame.transform.scale(pygame.image.load("assets/transicionNiveles/fondonegro3.jpg"), (screen.get_width(), screen.get_height()))
     # Renderizar el texto
     font = pygame.font.Font("assets/transicionNiveles/font2.ttf", 120)
     text = font.render('VICTORIA', True, (0,255,0))
