@@ -5,7 +5,7 @@ from entities.enemy import Enemy, Enemy2
 from entities.bullet import Bullet
 import random
 
-WINDOW_SIZE = (1920, 1080)  # Ajustar a pantalla completa estándar
+WINDOW_SIZE = (1920, 1080)  # Ajustar a pantalla completa estándar!
 MAP_SIZE = (1920, 1200)    # Hacer el mapa más alto
 BACKGROUND_SIZE = (1920, 1200)  # Estirar el fondo más verticalmente
 
