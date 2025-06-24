@@ -29,6 +29,14 @@ class Game:
         self.sangre_img = pygame.image.load('assets/muerte/sangre.png').convert_alpha()
         self.sangre_img = pygame.transform.scale(self.sangre_img, (60, 60))
         
+        # Sistema de puntuación
+        self.score = 0
+        self.score_per_enemy = 100
+        self.score_per_level = 500
+        self.combo_multiplier = 1.0
+        self.last_kill_time = 0
+        self.combo_timeout = 2000  # 2 segundos para mantener combo
+        
         # Inicializar el estado del juego para el primer nivel
         self._initialize_game_state(initial_level_number)
 
@@ -51,6 +59,19 @@ class Game:
             print(f"Could not load level {self.level}. Exiting game.")
             self.running = False
 
+    def add_score(self, points):
+        """Agregar puntos al score actual"""
+        self.score += int(points * self.combo_multiplier)
+
+    def update_combo(self):
+        """Actualizar multiplicador de combo"""
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_kill_time < self.combo_timeout:
+            self.combo_multiplier = min(self.combo_multiplier + 0.1, 3.0)  # Máximo 3x
+        else:
+            self.combo_multiplier = 1.0
+        self.last_kill_time = current_time
+
     def spawn_enemy_far_from_player(self):
         while True:
             if self.level == 2:
@@ -68,6 +89,9 @@ class Game:
                 return enemy
 
     def next_level(self):
+        # Agregar puntos por completar nivel
+        self.add_score(self.score_per_level)
+        
         next_level_module = self.level_manager.next_level(self.username)
         if next_level_module:
             show_level_transition(self.screen, self.level_manager.get_current_level_number())
@@ -75,7 +99,7 @@ class Game:
         else:
             print("No more levels available.")
             from screens.game_over import show_victory
-            show_victory(self.screen)
+            show_victory(self.screen, self.user_auth, self.username, self.score)
             self.running = False
 
     def previous_level(self):
@@ -111,6 +135,10 @@ class Game:
                         self.running = False
                     if event.key == pygame.K_F11:
                         self.toggle_fullscreen()
+                    if event.key == pygame.K_TAB:
+                        # Mostrar ranking durante el juego
+                        from screens.leaderboard import show_leaderboard
+                        show_leaderboard(self.screen, self.user_auth, self.username)
                     if self.is_debug:
                         if event.key == pygame.K_n:
                             self.next_level()
@@ -121,8 +149,9 @@ class Game:
             self.draw()
             if self.player.lives <= 0:
                 from screens.game_over import show_game_over
-                restart = show_game_over(self.screen)
+                restart = show_game_over(self.screen, self.user_auth, self.username, self.score)
                 if restart:
+                    self.score = 0  # Reiniciar puntuación
                     self._initialize_game_state(1)
                     show_level_transition(self.screen, self.level)
                 else:
@@ -134,7 +163,7 @@ class Game:
                     self.next_level()
                 else:
                     from screens.game_over import show_victory
-                    show_victory(self.screen)
+                    show_victory(self.screen, self.user_auth, self.username, self.score)
                     self.running = False
 
     def update(self):
@@ -150,6 +179,9 @@ class Game:
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
                     self.enemies_killed += 1
+                    # Agregar puntos por matar enemigo
+                    self.update_combo()
+                    self.add_score(self.score_per_enemy)
                     break
             # Verificar colisiones con el jefe
             if self.boss and bullet.rect.colliderect(self.boss.rect):
@@ -159,6 +191,8 @@ class Game:
                 if self.boss.lives <= 0:
                     self.boss = None
                     self.level_completed = True
+                    # Agregar puntos por matar jefe
+                    self.add_score(self.score_per_enemy * 5)  # 5x más puntos por jefe
                     # Si estamos en el nivel 3, pasar al siguiente nivel cuando se mata al jefe
                     if self.level == 3:
                         self.next_level()
@@ -210,4 +244,53 @@ class Game:
         self.screen.blit(map_surface, (0,0), camera)
         mx, my = pygame.mouse.get_pos()
         self.screen.blit(self.cursor_img, (mx-20, my-20))
-        pygame.display.flip() 
+        
+        # Dibujar información de puntuación en pantalla
+        self.draw_score_info()
+        
+        pygame.display.flip()
+
+    def draw_score_info(self):
+        """Dibujar información de puntuación en la pantalla"""
+        # Fuentes
+        score_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 30)
+        small_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 20)
+        
+        # Fondo semitransparente para la información
+        info_surface = pygame.Surface((400, 200))
+        info_surface.set_alpha(180)
+        info_surface.fill((0, 0, 0))
+        self.screen.blit(info_surface, (20, 20))
+        
+        # Puntuación actual
+        score_text = score_font.render(f'Score: {self.score}', True, (255, 255, 255))
+        self.screen.blit(score_text, (30, 30))
+        
+        # Nivel actual
+        level_text = score_font.render(f'Nivel: {self.level}', True, (255, 255, 255))
+        self.screen.blit(level_text, (30, 60))
+        
+        # Enemigos eliminados
+        enemies_text = score_font.render(f'Enemigos: {self.enemies_killed}', True, (255, 255, 255))
+        self.screen.blit(enemies_text, (30, 90))
+        
+        # Multiplicador de combo
+        if self.combo_multiplier > 1.0:
+            combo_text = score_font.render(f'Combo: x{self.combo_multiplier:.1f}', True, (255, 255, 0))
+            self.screen.blit(combo_text, (30, 120))
+        
+        # Mejor puntuación personal
+        user_data = self.user_auth.get_user_data(self.username)
+        if user_data and user_data.get("high_score", 0) > 0:
+            best_text = small_font.render(f'Tu mejor: {user_data["high_score"]}', True, (255, 255, 0))
+            self.screen.blit(best_text, (30, 150))
+        
+        # Mejor puntuación global
+        best_score = self.user_auth.get_best_score()
+        if best_score["high_score"] > 0:
+            global_text = small_font.render(f'Récord: {best_score["high_score"]}', True, (255, 215, 0))
+            self.screen.blit(global_text, (30, 170))
+        
+        # Instrucciones
+        tab_text = small_font.render('TAB: Ver ranking', True, (200, 200, 200))
+        self.screen.blit(tab_text, (WINDOW_SIZE[0] - 200, 30)) 
