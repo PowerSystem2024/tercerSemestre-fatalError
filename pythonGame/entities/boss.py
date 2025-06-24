@@ -5,7 +5,7 @@ from utils.spritesheet import SpriteSheet
 class Boss(Enemy):
     def __init__(self, level, map_size, pos=None):
         super().__init__(level, map_size, pos)
-        self.spritesheet = SpriteSheet('assets/enemigos/enemigos2.png', 'assets/enemigos/enemigos2.plist', scale=0.6)
+        self.spritesheet = SpriteSheet('assets/enemigos/enemigos2.png', 'assets/enemigos/enemigos2.plist', scale=0.7)
         self.animations = {
             'down': self.spritesheet.get_images_by_range(0, 4),
             'left': self.spritesheet.get_images_by_range(4, 8),
