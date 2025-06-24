@@ -5,8 +5,9 @@ from entities.enemy import Enemy, Enemy2, Enemy3
 from entities.bullet import Bullet
 import random
 
-WINDOW_SIZE = (1280, 720)
-MAP_SIZE = (1920, 1080)
+WINDOW_SIZE = (1920, 1080)  # Ajustar a pantalla completa estándar!
+MAP_SIZE = (1920, 1200)    # Hacer el mapa más alto
+BACKGROUND_SIZE = (1920, 1200)  # Estirar el fondo más verticalmente
 
 class Game:
     def __init__(self, username, level_manager, user_auth, initial_level_number, is_debug):
@@ -14,14 +15,14 @@ class Game:
         self.level_manager = level_manager
         self.user_auth = user_auth
         self.is_debug = is_debug
-        self.screen = pygame.display.set_mode(WINDOW_SIZE)
+        self.screen = pygame.display.set_mode(WINDOW_SIZE, pygame.FULLSCREEN)
         pygame.display.set_caption("Top Down Shooter")
         self.clock = pygame.time.Clock()
         self.max_level = 4
         self.running = True
         self.fullscreen = False
         self.background = pygame.image.load('assets/mapa/mapaUno.png').convert()
-        self.background = pygame.transform.scale(self.background, MAP_SIZE)
+        self.background = pygame.transform.scale(self.background, BACKGROUND_SIZE)
         self.cursor_img = pygame.image.load('assets/cursor/cursor.png').convert_alpha()
         self.cursor_img = pygame.transform.scale(self.cursor_img, (40, 40))
         pygame.mouse.set_visible(False)
