@@ -1,4 +1,5 @@
-from entities.enemy import Enemy
+import random
+from entities.enemy import Enemy3
 from entities.boss import Boss
 
 def cargar_nivel(game):
@@ -7,9 +8,19 @@ def cargar_nivel(game):
     game.enemies_killed = 0
     game.boss_spawned = False
     
-    # Reducimos la cantidad de enemigos de 9 a 6
+    # Crear enemigos del nuevo tipo Enemy3
     for _ in range(6 + game.level):
-        enemy = game.spawn_enemy_far_from_player()
+        enemy = Enemy3(game.level, (1920, 1080))  # Crear Enemy3 directamente
+        # Posicionar lejos del jugador
+        while True:
+            enemy.rect.x = random.randint(0, 1920 - enemy.rect.width)
+            enemy.rect.y = random.randint(0, 1080 - enemy.rect.height)
+            # Verificar que esté lejos del jugador
+            dx = enemy.rect.centerx - game.player.rect.centerx
+            dy = enemy.rect.centery - game.player.rect.centery
+            distance = (dx**2 + dy**2) ** 0.5
+            if distance > 300:  # Al menos 300 píxeles de distancia
+                break
         game.enemies.append(enemy)
 
 def update_level(game):
