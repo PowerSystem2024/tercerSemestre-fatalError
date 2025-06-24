@@ -1,4 +1,6 @@
 import pygame
+import os
+import pygame.mixer
 # from core.registry import get_users, save_user # Ya no es necesario
 
 # --- Colores --- #
@@ -21,6 +23,15 @@ FONT_MEDIUM = pygame.font.Font(None, 36) # Ajustada
 FONT_LARGE = pygame.font.Font(None, 50)  # Ligeramente más pequeña
 
 def show_login(screen, user_auth):
+    # Inicializar el mixer de pygame y reproducir la música de login
+    pygame.mixer.init()
+    music_path = os.path.join('soundtracks', 'Logging OST.mp3')
+    try:
+        pygame.mixer.music.load(music_path)
+        pygame.mixer.music.set_volume(0.03)  # Volumen bajo (0.0 a 1.0)
+        pygame.mixer.music.play(-1)  # Repetir la música en loop
+    except Exception as e:
+        print(f"No se pudo cargar la música de login: {e}")
     # Cargar y escalar la imagen de fondo
     background_image = pygame.image.load('assets/mapa/MENU.png').convert()
     background_image = pygame.transform.scale(background_image, screen.get_size())
@@ -69,6 +80,7 @@ def show_login(screen, user_auth):
                         message_color = SUCCESS_COLOR if success else ERROR_COLOR
                         if success:
                             print(f"Login successful: {username_text}")
+                            pygame.mixer.music.stop()  # Detener la música al hacer login
                             return username_text
                 elif button_register.collidepoint(event.pos):
                     if not username_text.strip() or not password_text.strip():
@@ -107,6 +119,7 @@ def show_login(screen, user_auth):
                             message_color = SUCCESS_COLOR if success else ERROR_COLOR
                             if success:
                                 print(f"Login successful: {username_text}")
+                                pygame.mixer.music.stop()  # Detener la música al hacer login
                                 return username_text
                     else:
                         password_text += event.unicode
