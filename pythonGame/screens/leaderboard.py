@@ -5,15 +5,15 @@ def show_leaderboard(screen, user_auth, current_username=None):
     
     # Cargar fondo
     fondo_img = pygame.transform.scale(
-        pygame.image.load("assets/transicionNiveles/fondonegro3.jpg"), 
+        pygame.image.load("assets/mapa/MENU.png"), 
         (screen.get_width(), screen.get_height())
     )
     
     # Fuentes
-    title_font = pygame.font.Font("assets/transicionNiveles/font2.ttf", 48)
-    header_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 28)
-    score_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 22)
-    info_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 18)
+    title_font = pygame.font.Font("assets/transicionNiveles/font5.ttf", 48)
+    header_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 28)
+    score_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 22)
+    info_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 18)
     
     # Obtener datos
     top_scores = user_auth.get_top_10_scores()
