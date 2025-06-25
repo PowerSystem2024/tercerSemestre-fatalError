@@ -5,7 +5,7 @@ from entities.enemy import Enemy, Enemy2, Enemy3
 from entities.bullet import Bullet
 import random
 
-WINDOW_SIZE = (1280, 720)
+WINDOW_SIZE = (1024, 576)
 MAP_SIZE = (1920, 1080)
 
 class Game:
