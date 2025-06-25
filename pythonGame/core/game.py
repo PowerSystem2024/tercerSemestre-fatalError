@@ -5,9 +5,9 @@ from entities.enemy import Enemy, Enemy2, Enemy3
 from entities.bullet import Bullet
 import random
 
-WINDOW_SIZE = (1920, 1080)  # Ajustar a pantalla completa estándar!
-MAP_SIZE = (1920, 1200)    # Hacer el mapa más alto
-BACKGROUND_SIZE = (1920, 1200)  # Estirar el fondo más verticalmente
+WINDOW_SIZE = (1024, 576)  # Tamaño apropiado para notebooks
+MAP_SIZE = (1920, 1080)    # Mapa original
+BACKGROUND_SIZE = (1920, 1080)  # Fondo original
 
 class Game:
     def __init__(self, username, level_manager, user_auth, initial_level_number, is_debug):
@@ -15,7 +15,7 @@ class Game:
         self.level_manager = level_manager
         self.user_auth = user_auth
         self.is_debug = is_debug
-        self.screen = pygame.display.set_mode(WINDOW_SIZE, pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode(WINDOW_SIZE)  # Ventana normal, no pantalla completa
         pygame.display.set_caption("Top Down Shooter")
         self.clock = pygame.time.Clock()
         self.max_level = 4
@@ -36,6 +36,20 @@ class Game:
         self.combo_multiplier = 1.0
         self.last_kill_time = 0
         self.combo_timeout = 2000  # 2 segundos para mantener combo
+        
+        # Cargar fuentes una sola vez para mejor rendimiento
+        try:
+            self.score_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 24)  # Más pequeño
+            self.small_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 18)  # Más pequeño
+        except:
+            # Fallback si no encuentra las fuentes
+            self.score_font = pygame.font.Font(None, 24)
+            self.small_font = pygame.font.Font(None, 18)
+        
+        # Cache para textos que no cambian frecuentemente
+        self.cached_user_best = None
+        self.cached_global_best = None
+        self.cache_update_timer = 0
         
         # Inicializar el estado del juego para el primer nivel
         self._initialize_game_state(initial_level_number)
@@ -252,45 +266,54 @@ class Game:
 
     def draw_score_info(self):
         """Dibujar información de puntuación en la pantalla"""
-        # Fuentes
-        score_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 30)
-        small_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 20)
-        
-        # Fondo semitransparente para la información
-        info_surface = pygame.Surface((400, 200))
+        # Fondo semitransparente más pequeño para notebooks
+        info_surface = pygame.Surface((300, 160))  # Más pequeño
         info_surface.set_alpha(180)
         info_surface.fill((0, 0, 0))
-        self.screen.blit(info_surface, (20, 20))
+        self.screen.blit(info_surface, (10, 10))  # Más cerca del borde
         
         # Puntuación actual
-        score_text = score_font.render(f'Score: {self.score}', True, (255, 255, 255))
-        self.screen.blit(score_text, (30, 30))
+        score_text = self.score_font.render(f'Score: {self.score}', True, (255, 255, 255))
+        self.screen.blit(score_text, (20, 20))
         
         # Nivel actual
-        level_text = score_font.render(f'Nivel: {self.level}', True, (255, 255, 255))
-        self.screen.blit(level_text, (30, 60))
+        level_text = self.score_font.render(f'Nivel: {self.level}', True, (255, 255, 255))
+        self.screen.blit(level_text, (20, 45))
         
         # Enemigos eliminados
-        enemies_text = score_font.render(f'Enemigos: {self.enemies_killed}', True, (255, 255, 255))
-        self.screen.blit(enemies_text, (30, 90))
+        enemies_text = self.score_font.render(f'Enemigos: {self.enemies_killed}', True, (255, 255, 255))
+        self.screen.blit(enemies_text, (20, 70))
         
         # Multiplicador de combo
         if self.combo_multiplier > 1.0:
-            combo_text = score_font.render(f'Combo: x{self.combo_multiplier:.1f}', True, (255, 255, 0))
-            self.screen.blit(combo_text, (30, 120))
+            combo_text = self.score_font.render(f'Combo: x{self.combo_multiplier:.1f}', True, (255, 255, 0))
+            self.screen.blit(combo_text, (20, 95))
         
-        # Mejor puntuación personal
-        user_data = self.user_auth.get_user_data(self.username)
-        if user_data and user_data.get("high_score", 0) > 0:
-            best_text = small_font.render(f'Tu mejor: {user_data["high_score"]}', True, (255, 255, 0))
-            self.screen.blit(best_text, (30, 150))
+        # Actualizar cache cada 5 segundos para evitar consultas constantes a la BD
+        current_time = pygame.time.get_ticks()
+        if current_time - self.cache_update_timer > 5000:  # 5 segundos
+            try:
+                user_data = self.user_auth.get_user_data(self.username)
+                self.cached_user_best = user_data.get("high_score", 0) if user_data else 0
+                
+                best_score = self.user_auth.get_best_score()
+                self.cached_global_best = best_score.get("high_score", 0) if best_score else 0
+            except:
+                # Si hay error en la BD, usar valores por defecto
+                self.cached_user_best = 0
+                self.cached_global_best = 0
+            self.cache_update_timer = current_time
         
-        # Mejor puntuación global
-        best_score = self.user_auth.get_best_score()
-        if best_score["high_score"] > 0:
-            global_text = small_font.render(f'Récord: {best_score["high_score"]}', True, (255, 215, 0))
-            self.screen.blit(global_text, (30, 170))
+        # Mostrar mejor puntuación personal (desde cache)
+        if self.cached_user_best and self.cached_user_best > 0:
+            best_text = self.small_font.render(f'Tu mejor: {self.cached_user_best}', True, (255, 255, 0))
+            self.screen.blit(best_text, (20, 120))
         
-        # Instrucciones
-        tab_text = small_font.render('TAB: Ver ranking', True, (200, 200, 200))
-        self.screen.blit(tab_text, (WINDOW_SIZE[0] - 200, 30)) 
+        # Mostrar mejor puntuación global (desde cache)
+        if self.cached_global_best and self.cached_global_best > 0:
+            global_text = self.small_font.render(f'Récord: {self.cached_global_best}', True, (255, 215, 0))
+            self.screen.blit(global_text, (20, 140))
+        
+        # Instrucciones más pequeñas para notebooks
+        tab_text = self.small_font.render('TAB: Ranking', True, (200, 200, 200))
+        self.screen.blit(tab_text, (WINDOW_SIZE[0] - 120, 20)) 
