@@ -6,9 +6,9 @@ def show_game_over(screen, user_auth, username, final_score):
     fondo_img = pygame.transform.scale(pygame.image.load("assets/transicionNiveles/fondonegro3.jpg"), (screen.get_width(), screen.get_height()))
     
     # Fuentes
-    title_font = pygame.font.Font("assets/transicionNiveles/font2.ttf", 120)
-    score_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 50)
-    info_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 40)
+    title_font = pygame.font.Font("assets/transicionNiveles/font2.ttf", 70)
+    score_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 32)
+    info_font = pygame.font.Font("assets/transicionNiveles/font4.TTF", 24)
     
     # Obtener datos del usuario
     user_data = user_auth.get_user_data(username)
@@ -30,52 +30,83 @@ def show_game_over(screen, user_auth, username, final_score):
         
         # Título
         text = title_font.render('GAME OVER', True, (255,0,0))
-        text_rect = text.get_rect(center=(screen.get_width()//2, 150))
+        shadow = title_font.render('GAME OVER', True, (40,0,0))
+        text_rect = text.get_rect(center=(screen.get_width()//2, 90))
+        shadow_rect = shadow.get_rect(center=(screen.get_width()//2+2, 92))
+        screen.blit(shadow, shadow_rect)
         screen.blit(text, text_rect)
-        
+        y_offset = 150
         # Puntuación actual
         score_text = score_font.render(f'Puntuación: {final_score}', True, (255,255,255))
-        score_rect = score_text.get_rect(center=(screen.get_width()//2, 280))
+        shadow = score_font.render(f'Puntuación: {final_score}', True, (40,40,40))
+        score_rect = score_text.get_rect(center=(screen.get_width()//2, y_offset))
+        shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+1))
+        screen.blit(shadow, shadow_rect)
         screen.blit(score_text, score_rect)
-        
+        y_offset += 38
         # Mejor puntuación personal
         if current_high_score > 0:
             high_score_text = score_font.render(f'Tu mejor: {current_high_score}', True, (255,255,0))
-            high_score_rect = high_score_text.get_rect(center=(screen.get_width()//2, 330))
+            shadow = score_font.render(f'Tu mejor: {current_high_score}', True, (80,80,0))
+            high_score_rect = high_score_text.get_rect(center=(screen.get_width()//2, y_offset))
+            shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+1))
+            screen.blit(shadow, shadow_rect)
             screen.blit(high_score_text, high_score_rect)
-        
+            y_offset += 34
         # Nuevo récord
         if new_record:
             new_record_text = score_font.render('¡NUEVO RÉCORD PERSONAL!', True, (0,255,0))
-            new_record_rect = new_record_text.get_rect(center=(screen.get_width()//2, 380))
+            shadow = score_font.render('¡NUEVO RÉCORD PERSONAL!', True, (0,80,0))
+            new_record_rect = new_record_text.get_rect(center=(screen.get_width()//2, y_offset))
+            shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+1))
+            screen.blit(shadow, shadow_rect)
             screen.blit(new_record_text, new_record_rect)
-        
+            y_offset += 34
         # Ranking del usuario
         if user_rank:
             rank_text = score_font.render(f'Tu posición: #{user_rank}', True, (0,255,255))
-            rank_rect = rank_text.get_rect(center=(screen.get_width()//2, 430))
+            shadow = score_font.render(f'Tu posición: #{user_rank}', True, (0,80,80))
+            rank_rect = rank_text.get_rect(center=(screen.get_width()//2, y_offset))
+            shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+1))
+            screen.blit(shadow, shadow_rect)
             screen.blit(rank_text, rank_rect)
-        
+            y_offset += 34
         # Mejor puntuación global
         if best_score["high_score"] > 0:
+            username = best_score["username"]
+            if len(username) > 10:
+                username = username[:10] + "..."
             global_best_text = score_font.render(
-                f'Récord mundial: {best_score["username"]} - {best_score["high_score"]}', 
+                f'Récord mundial: {username} - {best_score["high_score"]}', 
                 True, (255,215,0)
             )
-            global_best_rect = global_best_text.get_rect(center=(screen.get_width()//2, 480))
+            shadow = score_font.render(
+                f'Récord mundial: {username} - {best_score["high_score"]}', 
+                True, (80,80,0)
+            )
+            global_best_rect = global_best_text.get_rect(center=(screen.get_width()//2, y_offset))
+            shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+1))
+            screen.blit(shadow, shadow_rect)
             screen.blit(global_best_text, global_best_rect)
-        
+            y_offset += 38
         # Instrucciones
         info1 = info_font.render('Presiona R para reiniciar', True, (255,255,255))
-        info2 = info_font.render('Presiona L para ver ranking', True, (255,255,255))
-        info3 = info_font.render('Presiona ESC para salir', True, (255,255,255))
-        
-        info1_rect = info1.get_rect(center=(screen.get_width()//2, 550))
-        info2_rect = info2.get_rect(center=(screen.get_width()//2, 590))
-        info3_rect = info3.get_rect(center=(screen.get_width()//2, 630))
-        
+        shadow = info_font.render('Presiona R para reiniciar', True, (40,40,40))
+        info1_rect = info1.get_rect(center=(screen.get_width()//2, y_offset+30))
+        shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+31))
+        screen.blit(shadow, shadow_rect)
         screen.blit(info1, info1_rect)
+        info2 = info_font.render('Presiona L para ver ranking', True, (255,255,255))
+        shadow = info_font.render('Presiona L para ver ranking', True, (40,40,40))
+        info2_rect = info2.get_rect(center=(screen.get_width()//2, y_offset+60))
+        shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+61))
+        screen.blit(shadow, shadow_rect)
         screen.blit(info2, info2_rect)
+        info3 = info_font.render('Presiona ESC para salir', True, (255,255,255))
+        shadow = info_font.render('Presiona ESC para salir', True, (40,40,40))
+        info3_rect = info3.get_rect(center=(screen.get_width()//2, y_offset+90))
+        shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+91))
+        screen.blit(shadow, shadow_rect)
         screen.blit(info3, info3_rect)
         
         pygame.display.flip()

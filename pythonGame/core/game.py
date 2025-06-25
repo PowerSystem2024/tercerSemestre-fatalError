@@ -254,40 +254,52 @@ class Game:
             self.boss.draw(map_surface)
         for bullet in self.bullets:
             bullet.draw(map_surface)
-        self.player.draw_lives(map_surface)
         self.screen.blit(map_surface, (0,0), camera)
+        # HUD
+        self.draw_score_info()
+        # VIDAS SIEMPRE ARRIBA DE TODO
+        self.player.draw_lives(self.screen)
+        # Cursor
         mx, my = pygame.mouse.get_pos()
         self.screen.blit(self.cursor_img, (mx-20, my-20))
-        
-        # Dibujar información de puntuación en pantalla
-        self.draw_score_info()
-        
         pygame.display.flip()
 
     def draw_score_info(self):
-        """Dibujar información de puntuación en la pantalla"""
-        # Fondo semitransparente más pequeño para notebooks
-        info_surface = pygame.Surface((300, 160))  # Más pequeño
-        info_surface.set_alpha(180)
-        info_surface.fill((0, 0, 0))
-        self.screen.blit(info_surface, (10, 10))  # Más cerca del borde
-        
-        # Puntuación actual
-        score_text = self.score_font.render(f'Score: {self.score}', True, (255, 255, 255))
-        self.screen.blit(score_text, (20, 20))
-        
-        # Nivel actual
-        level_text = self.score_font.render(f'Nivel: {self.level}', True, (255, 255, 255))
-        self.screen.blit(level_text, (20, 45))
-        
+        """Dibujar información de puntuación en la pantalla, ahora en la esquina inferior derecha, pequeño y estético"""
+        hud_width = 250
+        hud_height = 120
+        margin = 18
+        hud_x = WINDOW_SIZE[0] - hud_width - margin
+        hud_y = WINDOW_SIZE[1] - hud_height - margin
+        info_surface = pygame.Surface((hud_width, hud_height), pygame.SRCALPHA)
+        info_surface.set_alpha(120)
+        pygame.draw.rect(info_surface, (0, 0, 0, 180), (0, 0, hud_width, hud_height), border_radius=14)
+        pygame.draw.rect(info_surface, (255, 255, 255, 30), (0, 0, hud_width, hud_height), 2, border_radius=14)
+        x_text = 16
+        y_text = 12
+        line_space = 24
+        # Score
+        score_text = self.score_font.render(f'Score: {self.score}', True, (230, 230, 230))
+        shadow = self.score_font.render(f'Score: {self.score}', True, (40, 40, 40))
+        info_surface.blit(shadow, (x_text+1, y_text+1))
+        info_surface.blit(score_text, (x_text, y_text))
+        # Nivel
+        level_text = self.score_font.render(f'Nivel: {self.level}', True, (173, 216, 230))
+        shadow = self.score_font.render(f'Nivel: {self.level}', True, (40, 40, 40))
+        info_surface.blit(shadow, (x_text+1, y_text + line_space+1))
+        info_surface.blit(level_text, (x_text, y_text + line_space))
         # Enemigos eliminados
-        enemies_text = self.score_font.render(f'Enemigos: {self.enemies_killed}', True, (255, 255, 255))
-        self.screen.blit(enemies_text, (20, 70))
-        
-        # Multiplicador de combo
+        enemies_text = self.score_font.render(f'Enemigos: {self.enemies_killed}', True, (255, 182, 193))
+        shadow = self.score_font.render(f'Enemigos: {self.enemies_killed}', True, (40, 40, 40))
+        info_surface.blit(shadow, (x_text+1, y_text + 2*line_space+1))
+        info_surface.blit(enemies_text, (x_text, y_text + 2*line_space))
+        # Combo
         if self.combo_multiplier > 1.0:
-            combo_text = self.score_font.render(f'Combo: x{self.combo_multiplier:.1f}', True, (255, 255, 0))
-            self.screen.blit(combo_text, (20, 95))
+            combo_text = self.score_font.render(f'Combo: x{self.combo_multiplier:.1f}', True, (255, 215, 0))
+            shadow = self.score_font.render(f'Combo: x{self.combo_multiplier:.1f}', True, (80, 80, 0))
+            info_surface.blit(shadow, (x_text+1, y_text + 3*line_space+1))
+            info_surface.blit(combo_text, (x_text, y_text + 3*line_space))
+        self.screen.blit(info_surface, (hud_x, hud_y))
         
         # Actualizar cache cada 5 segundos para evitar consultas constantes a la BD
         current_time = pygame.time.get_ticks()
@@ -304,16 +316,4 @@ class Game:
                 self.cached_global_best = 0
             self.cache_update_timer = current_time
         
-        # Mostrar mejor puntuación personal (desde cache)
-        if self.cached_user_best and self.cached_user_best > 0:
-            best_text = self.small_font.render(f'Tu mejor: {self.cached_user_best}', True, (255, 255, 0))
-            self.screen.blit(best_text, (20, 120))
-        
-        # Mostrar mejor puntuación global (desde cache)
-        if self.cached_global_best and self.cached_global_best > 0:
-            global_text = self.small_font.render(f'Récord: {self.cached_global_best}', True, (255, 215, 0))
-            self.screen.blit(global_text, (20, 140))
-        
-        # Instrucciones más pequeñas para notebooks
-        tab_text = self.small_font.render('TAB: Ranking', True, (200, 200, 200))
-        self.screen.blit(tab_text, (WINDOW_SIZE[0] - 120, 20)) 
+        pygame.display.flip() 

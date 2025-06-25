@@ -2,6 +2,7 @@ import pygame
 from utils.spritesheet import SpriteSheet
 import math
 from entities.bullet import Bullet
+import os
 
 class Player:
     def __init__(self):
@@ -79,8 +80,20 @@ class Player:
         surface.blit(self.image, self.rect)
 
     def draw_lives(self, surface):
-        for i in range(self.lives):
-            pygame.draw.ellipse(surface, (255,0,0), (10 + i*40, 10, 30, 30))
+        heart_path = 'assets/jugador/heart.png'
+        if os.path.exists(heart_path):
+            heart_img = pygame.image.load(heart_path).convert_alpha()
+            heart_img = pygame.transform.scale(heart_img, (26, 26))
+            for i in range(self.lives):
+                surface.blit(heart_img, (10 + i*32, 10))
+        else:
+            for i in range(self.lives):
+                # Sombra
+                pygame.draw.ellipse(surface, (40,40,40), (12 + i*32, 12, 26, 26))
+                # Borde blanco
+                pygame.draw.ellipse(surface, (255,255,255), (10 + i*32, 10, 26, 26), 2)
+                # Corazón rojo
+                pygame.draw.ellipse(surface, (255,40,40), (10 + i*32, 10, 26, 26))
 
     def hit(self):
         self.lives -= 1
