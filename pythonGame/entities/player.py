@@ -5,8 +5,8 @@ from entities.bullet import Bullet
 import os
 
 class Player:
-    def __init__(self):
-        self.spritesheet = SpriteSheet('assets/jugador/player.png', 'assets/jugador/player.plist', scale=0.15)
+    def _init_(self):
+        self.spritesheet = SpriteSheet('assets/jugador/player.png', 'assets/jugador/player.plist', scale=0.12)
         # Animaciones: asumo 4 direcciones, 4 frames cada una (ajustar si es necesario)
         self.animations = {
             'idle': [self.spritesheet.get_image(0)],                # 1.png
@@ -18,7 +18,7 @@ class Player:
         self.direction = 'down'
         self.anim_index = 0
         self.anim_timer = 0
-        self.anim_speed = 0.15
+        self.anim_speed = 0.2
         self.image = self.animations[self.direction][self.anim_index]
         self.rect = self.image.get_rect(center=(960, 540))
         
@@ -40,12 +40,15 @@ class Player:
         self.blink_interval = 0.1  # Parpadea cada 0.1 segundos
         self.visible = True  # Para el efecto de parpadeo
 
-    def handle_event(self, event, bullets):
+    def handle_event(self, event, bullets, camera_offset=(0, 0)):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             now = pygame.time.get_ticks()
             if now - self.last_shot > self.shoot_delay:
                 mx, my = pygame.mouse.get_pos()
-                bullet = Bullet(self.rect.centerx, self.rect.centery, mx, my)
+                # Convertir coordenadas del mouse de pantalla a coordenadas del mundo
+                world_mx = mx + camera_offset[0]
+                world_my = my + camera_offset[1]
+                bullet = Bullet(self.rect.centerx, self.rect.centery, world_mx, world_my)
                 bullets.append(bullet)
                 self.shoot_sound.play()
                 self.last_shot = now
@@ -152,4 +155,4 @@ class Player:
     def reset_position(self, map_size):
         self.rect.center = (map_size[0]//2, map_size[1]//2)
 
-from entities.bullet import Bullet 
+from entities.bullet import Bullet
