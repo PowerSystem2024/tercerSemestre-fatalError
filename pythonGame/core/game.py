@@ -212,15 +212,18 @@ class Game:
         # Actualizar enemigos normales
         for enemy in self.enemies[:]:
             enemy.update(self.player)
-            if enemy.rect.colliderect(self.player.rect):
-                self.player.hit()
-                if enemy in self.enemies:
-                    self.enemies.remove(enemy)
+            # Solo los enemigos que no son Enemy3 causan daño por contacto
+            # Los Enemy3 atacan con su sistema de ataque propio
+            if not isinstance(enemy, type(self.enemies[0])) or not hasattr(enemy, 'is_attacking'):
+                if enemy.rect.colliderect(self.player.hitbox):
+                    hit_successful = self.player.hit()
+                    if hit_successful and enemy in self.enemies:
+                        self.enemies.remove(enemy)
 
         # Actualizar jefe
         if self.boss:
             self.boss.update(self.player)
-            if self.boss.rect.colliderect(self.player.rect):
+            if self.boss.rect.colliderect(self.player.hitbox):
                 self.player.hit()
                 
         # INICIO NIVEL 2
