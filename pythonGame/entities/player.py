@@ -124,20 +124,20 @@ class Player:
         # pygame.draw.rect(surface, (0, 255, 0), self.hitbox, 2)
 
     def draw_lives(self, surface):
-        heart_path = 'assets/jugador/heart.png'
+        heart_path = 'assets/corazon/HEART1.png'
         if os.path.exists(heart_path):
             heart_img = pygame.image.load(heart_path).convert_alpha()
-            heart_img = pygame.transform.scale(heart_img, (26, 26))
+            heart_img = pygame.transform.scale(heart_img, (40, 40))
             for i in range(self.lives):
-                surface.blit(heart_img, (10 + i*32, 10))
+                surface.blit(heart_img, (10 + i*44, 10))
         else:
             for i in range(self.lives):
                 # Sombra
-                pygame.draw.ellipse(surface, (40,40,40), (12 + i*32, 12, 26, 26))
+                pygame.draw.ellipse(surface, (40,40,40), (12 + i*44, 12, 40, 40))
                 # Borde blanco
-                pygame.draw.ellipse(surface, (255,255,255), (10 + i*32, 10, 26, 26), 2)
+                pygame.draw.ellipse(surface, (255,255,255), (10 + i*44, 10, 40, 40), 2)
                 # Corazón rojo
-                pygame.draw.ellipse(surface, (255,40,40), (10 + i*32, 10, 26, 26))
+                pygame.draw.ellipse(surface, (255,40,40), (10 + i*44, 10, 40, 40))
 
     def hit(self):
         # Solo recibir daño si no es invulnerable
