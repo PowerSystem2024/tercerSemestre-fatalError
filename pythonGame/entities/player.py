@@ -25,6 +25,7 @@ class Player:
         self.lives = 3
         self.last_shot = 0
         self.shoot_delay = 200  # ms
+        self.shoot_sound = pygame.mixer.Sound('sonidos/Disparo.wav')
 
     def handle_event(self, event, bullets, camera_offset=(0, 0)):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -36,6 +37,7 @@ class Player:
                 world_my = my + camera_offset[1]
                 bullet = Bullet(self.rect.centerx, self.rect.centery, world_mx, world_my)
                 bullets.append(bullet)
+                self.shoot_sound.play()
                 self.last_shot = now
 
     def update(self, map_size):

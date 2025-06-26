@@ -172,7 +172,9 @@ class Game:
                     self.running = False
             if self.level == 3 and self.boss and self.boss.lives <= 0:
                 self.next_level()
-            elif self.enemies_killed >= 20 and not self.boss_spawned:
+            elif self.level == 2 and self.level_completed:
+                self.next_level()
+            elif self.level != 2 and self.enemies_killed >= 20 and not self.boss_spawned:
                 if self.level < self.max_level:
                     self.next_level()
                 else:
@@ -193,6 +195,9 @@ class Game:
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
                     self.enemies_killed += 1
+                    # Dropeo de vida solo en nivel 2
+                    if self.level == 2 and hasattr(self, 'drop_life_if_needed'):
+                        self.drop_life_if_needed(enemy.rect.centerx, enemy.rect.centery)
                     # Agregar puntos por matar enemigo
                     self.update_combo()
                     self.add_score(self.score_per_enemy)
@@ -225,7 +230,13 @@ class Game:
             self.boss.update(self.player)
             if self.boss.rect.colliderect(self.player.rect):
                 self.player.hit()
-
+                
+        # INICIO NIVEL 2
+        if self.level == 2:
+            if hasattr(self, 'update_nivel2'):
+                self.update_nivel2()
+            return
+        
         # Spawnear más enemigos si es necesario
         if self.level == 3:
             if not self.boss_spawned:
@@ -254,7 +265,12 @@ class Game:
             self.boss.draw(map_surface)
         for bullet in self.bullets:
             bullet.draw(map_surface)
+         # INICIO VIDAS DROPEADAS NIVEL 2
+        if self.level == 2 and hasattr(self, 'lives_drops'):
+            for life in self.lives_drops:
+                life.draw(map_surface)
         self.screen.blit(map_surface, (0,0), camera)
+        
         # HUD
         self.draw_score_info()
         # VIDAS SIEMPRE ARRIBA DE TODO
