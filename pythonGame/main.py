@@ -1,59 +1,35 @@
-import json
-import os
-import bcrypt
-from systems.mongodb_auth import MongoDBAuth
+import pygame
+from core.game import Game
+from screens.login import show_login
+from auth import UserAuth
+from systems.level_manager import LevelManager
 
-class UserAuth:
-    def __init__(self):
-        self.db_auth = MongoDBAuth()
-        self.users_file = 'usuarios.json'
-        self._migrate_users()
+IS_DEBUG = True  # Establecer en True para transiciones de nivel en modo depuración
 
-    def _migrate_users(self):
-        if os.path.exists(self.users_file):
-            with open(self.users_file, 'r') as f:
-                legacy_users = json.load(f)
-            for username, data in legacy_users.items():
-                # Hashear contraseña antes de migrar
-                hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-                self.db_auth.register_user(username, hashed_password)
-            os.remove(self.users_file)
-            print("Migrated users from usuarios.json to MongoDB.")
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((1064, 600))
 
-    def register(self, username, password):
-        # Hashear contraseña antes de registrar
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        success, message = self.db_auth.register_user(username, hashed_password)
-        return success, message
+    user_auth = UserAuth()
+    usuario = show_login(screen, user_auth)  # Pasar user_auth a show_login
 
-    def login(self, username, password):
-        user_data = self.db_auth.get_user_data(username)
-        if user_data:
-            stored_hashed_password = user_data.get('password', '').encode('utf-8')
-            if bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password):
-                return True, "Login successful."
-        return False, "Invalid username or password."
+    if not usuario:
+        print("Login failed or cancelled. Exiting.")
+        return
+    
+    # Asumiendo que 'usuario' es la cadena del nombre de usuario después de un login exitoso
+    current_username = usuario # Asignar el nombre de usuario a current_username
 
-    def update_high_score(self, username, score):
-        return self.db_auth.update_high_score(username, score)
+    level_manager = LevelManager(user_auth)
+    # Cargar el último nivel guardado del usuario, o empezar en el nivel 1
+    user_data = user_auth.get_user_data(current_username)
+    initial_level_number = user_data.get("current_level", 1) if user_data else 1
+    level_module = level_manager.load_level(initial_level_number, user_data) # Pasar user_data a load_level
 
-    def get_user_data(self, username):
-        return self.db_auth.get_user_data(username)
+    game = Game(current_username, level_manager, user_auth, initial_level_number, IS_DEBUG) # Pasar level_manager, user_auth y IS_DEBUG a Game
+    game.run()
 
-    def update_current_level(self, username, level):
-        return self.db_auth.update_current_level(username, level)
+    user_auth.close() # Cerrar conexión a MongoDB
 
-    def get_top_10_scores(self):
-        """Obtener el top 10 de puntuaciones"""
-        return self.db_auth.get_top_10_scores()
-
-    def get_best_score(self):
-        """Obtener la mejor puntuación global"""
-        return self.db_auth.get_best_score()
-
-    def get_user_rank(self, username):
-        """Obtener la posición del usuario en el ranking"""
-        return self.db_auth.get_user_rank(username)
-
-    def close(self):
-        self.db_auth.close()
+if __name__ == "__main__":
+    main() 

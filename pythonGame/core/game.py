@@ -10,7 +10,7 @@ MAP_SIZE = (1920, 1080)    # Mapa original
 BACKGROUND_SIZE = (1920, 1080)  # Fondo original
 
 class Game:
-    def _init_(self, username, level_manager, user_auth, initial_level_number, is_debug):
+    def __init__(self, username, level_manager, user_auth, initial_level_number, is_debug):
         self.username = username
         self.level_manager = level_manager
         self.user_auth = user_auth
@@ -268,17 +268,16 @@ class Game:
             self.boss.draw(map_surface)
         for bullet in self.bullets:
             bullet.draw(map_surface)
-         # INICIO VIDAS DROPEADAS NIVEL 2
+        # INICIO VIDAS DROPEADAS NIVEL 2
         if self.level == 2 and hasattr(self, 'lives_drops'):
             for life in self.lives_drops:
                 life.draw(map_surface)
         self.screen.blit(map_surface, (0,0), camera)
-        
         # HUD
         self.draw_score_info()
         # VIDAS SIEMPRE ARRIBA DE TODO
         self.player.draw_lives(self.screen)
-        # Cursor
+        # Cursor: dibujar SIEMPRE al final, sobre la pantalla
         mx, my = pygame.mouse.get_pos()
         self.screen.blit(self.cursor_img, (mx-20, my-20))
         pygame.display.flip()
@@ -334,5 +333,4 @@ class Game:
                 self.cached_user_best = 0
                 self.cached_global_best = 0
             self.cache_update_timer = current_time
-        
-        pygame.display.flip()
+        # pygame.display.flip()  # Eliminado para evitar parpadeo 

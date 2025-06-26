@@ -2,8 +2,8 @@ import pygame
 
 class Life:
     def __init__(self, x, y):
-        self.image = pygame.Surface((26, 26), pygame.SRCALPHA)
-        pygame.draw.ellipse(self.image, (255,40,40), (0, 0, 26, 26))  # Corazón rojo simple
+        self.image = pygame.image.load('assets/corazon/VIDA1.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (50, 50))  # Escalar al mismo tamaño
         self.rect = self.image.get_rect(center=(x, y))
 
     def draw(self, surface):
