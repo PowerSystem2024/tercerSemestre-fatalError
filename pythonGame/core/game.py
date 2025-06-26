@@ -6,8 +6,8 @@ from entities.bullet import Bullet
 import random
 
 WINDOW_SIZE = (1920, 1080)  # Ajustar a pantalla completa estándar!
-MAP_SIZE = (1920, 1200)    # Hacer el mapa más alto
-BACKGROUND_SIZE = (1920, 1200)  # Estirar el fondo más verticalmente
+MAP_SIZE = (1920, 1600)    # Hacer el mapa mucho más alto
+BACKGROUND_SIZE = (1920, 1600)  # Estirar el fondo más verticalmente
 
 class Game:
     def __init__(self, username, level_manager, user_auth, initial_level_number, is_debug):

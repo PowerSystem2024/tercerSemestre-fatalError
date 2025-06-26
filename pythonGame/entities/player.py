@@ -5,7 +5,7 @@ from entities.bullet import Bullet
 
 class Player:
     def __init__(self):
-        self.spritesheet = SpriteSheet('assets/jugador/player.png', 'assets/jugador/player.plist', scale=0.12)
+        self.spritesheet = SpriteSheet('assets/jugador/player.png', 'assets/jugador/player.plist', scale=0.15)
         # Animaciones: asumo 4 direcciones, 4 frames cada una (ajustar si es necesario)
         self.animations = {
             'idle': [self.spritesheet.get_image(0)],                # 1.png
@@ -17,7 +17,7 @@ class Player:
         self.direction = 'down'
         self.anim_index = 0
         self.anim_timer = 0
-        self.anim_speed = 0.2
+        self.anim_speed = 0.15
         self.image = self.animations[self.direction][self.anim_index]
         self.rect = self.image.get_rect(center=(960, 540))
         self.speed = 6
@@ -25,15 +25,12 @@ class Player:
         self.last_shot = 0
         self.shoot_delay = 200  # ms
 
-    def handle_event(self, event, bullets, camera_offset=(0, 0)):
+    def handle_event(self, event, bullets):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             now = pygame.time.get_ticks()
             if now - self.last_shot > self.shoot_delay:
                 mx, my = pygame.mouse.get_pos()
-                # Convertir coordenadas del mouse de pantalla a coordenadas del mundo
-                world_mx = mx + camera_offset[0]
-                world_my = my + camera_offset[1]
-                bullet = Bullet(self.rect.centerx, self.rect.centery, world_mx, world_my)
+                bullet = Bullet(self.rect.centerx, self.rect.centery, mx, my)
                 bullets.append(bullet)
                 self.last_shot = now
 
