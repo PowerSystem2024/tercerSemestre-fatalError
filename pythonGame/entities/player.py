@@ -21,11 +21,24 @@ class Player:
         self.anim_speed = 0.2
         self.image = self.animations[self.direction][self.anim_index]
         self.rect = self.image.get_rect(center=(960, 540))
+        
+        # Crear hitbox más pequeña (70% del tamaño original)
+        self.hitbox = pygame.Rect(0, 0, int(self.rect.width * 0.7), int(self.rect.height * 0.7))
+        self.hitbox.center = self.rect.center
+        
         self.speed = 6
         self.lives = 3
         self.last_shot = 0
         self.shoot_delay = 200  # ms
         self.shoot_sound = pygame.mixer.Sound('sonidos/Disparo.wav')
+        
+        # Sistema de invulnerabilidad
+        self.is_invulnerable = False
+        self.invulnerability_duration = 2.0  # 2 segundos de invulnerabilidad
+        self.invulnerability_timer = 0
+        self.blink_timer = 0
+        self.blink_interval = 0.1  # Parpadea cada 0.1 segundos
+        self.visible = True  # Para el efecto de parpadeo
 
     def handle_event(self, event, bullets, camera_offset=(0, 0)):
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -41,6 +54,22 @@ class Player:
                 self.last_shot = now
 
     def update(self, map_size):
+        # Actualizar sistema de invulnerabilidad
+        if self.is_invulnerable:
+            self.invulnerability_timer += 1/60.0  # Asumiendo 60 FPS
+            self.blink_timer += 1/60.0
+            
+            # Efecto de parpadeo
+            if self.blink_timer >= self.blink_interval:
+                self.visible = not self.visible
+                self.blink_timer = 0
+            
+            # Terminar invulnerabilidad
+            if self.invulnerability_timer >= self.invulnerability_duration:
+                self.is_invulnerable = False
+                self.invulnerability_timer = 0
+                self.visible = True
+        
         keys = pygame.key.get_pressed()
         dx = dy = 0
         if keys[pygame.K_w]:
@@ -57,11 +86,19 @@ class Player:
             self.direction = 'right'
         self.rect.x += dx
         self.rect.y += dy
+        
+        # Actualizar hitbox para que siga al jugador
+        self.hitbox.center = self.rect.center
+        
         # Limitar a los bordes del mapa
         self.rect.left = max(0, self.rect.left)
         self.rect.top = max(0, self.rect.top)
         self.rect.right = min(map_size[0], self.rect.right)
         self.rect.bottom = min(map_size[1], self.rect.bottom)
+        
+        # Actualizar hitbox después de limitar posición
+        self.hitbox.center = self.rect.center
+        
         # Animación
         if dx != 0 or dy != 0:
             self.anim_timer += self.anim_speed
@@ -79,7 +116,12 @@ class Player:
             self.anim_index = 0
 
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
+        # Solo dibujar si es visible (para efecto de parpadeo)
+        if self.visible:
+            surface.blit(self.image, self.rect)
+        
+        # Debug: Dibujar hitbox (comentar en producción)
+        # pygame.draw.rect(surface, (0, 255, 0), self.hitbox, 2)
 
     def draw_lives(self, surface):
         heart_path = 'assets/jugador/heart.png'
@@ -98,7 +140,17 @@ class Player:
                 pygame.draw.ellipse(surface, (255,40,40), (10 + i*32, 10, 26, 26))
 
     def hit(self):
-        self.lives -= 1
+        # Solo recibir daño si no es invulnerable
+        if not self.is_invulnerable:
+            self.lives -= 1
+            # Activar invulnerabilidad
+            self.is_invulnerable = True
+            self.invulnerability_timer = 0
+            self.blink_timer = 0
+            self.visible = True
+            # print(f"¡Jugador golpeado! Vidas restantes: {self.lives}")
+            return True  # Indica que el golpe fue efectivo
+        return False  # Indica que el golpe fue bloqueado por invulnerabilidad
 
     def reset_position(self, map_size):
         self.rect.center = (map_size[0]//2, map_size[1]//2)
