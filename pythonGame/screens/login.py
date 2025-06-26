@@ -12,6 +12,8 @@ BUTTON_COLOR = (50, 150, 200)  # Azul medio para el botón principal (Iniciar Se
 BUTTON_HOVER_COLOR = (70, 170, 220) # Azul más claro para el hover
 REGISTER_BUTTON_COLOR = (80, 180, 100) # Verde medio para el botón de Registrar
 REGISTER_BUTTON_HOVER_COLOR = (100, 200, 120) # Verde más claro para el hover
+LEADERBOARD_BUTTON_COLOR = (200, 150, 50) # Naranja para el botón de ranking
+LEADERBOARD_BUTTON_HOVER_COLOR = (220, 170, 70) # Naranja más claro para el hover
 ERROR_COLOR = (255, 80, 80)    # Rojo para mensajes de error
 SUCCESS_COLOR = (121, 195, 152) # Verde para mensajes de éxito
 BORDER_COLOR = (80, 80, 80)    # Color del borde
@@ -41,6 +43,7 @@ def show_login(screen, user_auth):
     input_box_pass = pygame.Rect(screen.get_width()//2 - 170, screen.get_height()//2 - 10, 340, 45)
     button_login = pygame.Rect(screen.get_width()//2 - 170, screen.get_height()//2 + 70, 160, 50)
     button_register = pygame.Rect(screen.get_width()//2 + 10, screen.get_height()//2 + 70, 160, 50)
+    button_leaderboard = pygame.Rect(screen.get_width()//2 - 80, screen.get_height()//2 + 140, 160, 50)
 
     # Estado de los campos de entrada
     active_user = False
@@ -59,6 +62,7 @@ def show_login(screen, user_auth):
         # Comprobar si el ratón está sobre los botones para el efecto hover
         hover_login = button_login.collidepoint(mouse_pos)
         hover_register = button_register.collidepoint(mouse_pos)
+        hover_leaderboard = button_leaderboard.collidepoint(mouse_pos)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -94,6 +98,10 @@ def show_login(screen, user_auth):
                             print(f"Registration successful: {username_text}")
                         else:
                             print(f"Registration failed: {msg}")
+                elif button_leaderboard.collidepoint(event.pos):
+                    # Mostrar ranking
+                    from screens.leaderboard import show_leaderboard
+                    show_leaderboard(screen, user_auth)
 
             if event.type == pygame.KEYDOWN:
                 if active_user:
@@ -174,10 +182,17 @@ def show_login(screen, user_auth):
         register_text_rect = register_text_surface.get_rect(center=button_register.center)
         screen.blit(register_text_surface, register_text_rect)
 
+        # Botón Ver Ranking
+        current_leaderboard_color = LEADERBOARD_BUTTON_HOVER_COLOR if hover_leaderboard else LEADERBOARD_BUTTON_COLOR
+        pygame.draw.rect(screen, current_leaderboard_color, button_leaderboard, border_radius=5)
+        leaderboard_text_surface = FONT_MEDIUM.render('Ver Ranking', True, TEXT_COLOR)
+        leaderboard_text_rect = leaderboard_text_surface.get_rect(center=button_leaderboard.center)
+        screen.blit(leaderboard_text_surface, leaderboard_text_rect)
+
         # --- Mostrar mensaje (éxito/error) --- #
         if message:
             message_surface = FONT_SMALL.render(message, True, message_color) 
-            message_rect = message_surface.get_rect(center=(screen.get_width()//2, screen.get_height()//2 + 130)) # Ajuste vertical
+            message_rect = message_surface.get_rect(center=(screen.get_width()//2, screen.get_height()//2 + 200)) # Ajuste vertical
             screen.blit(message_surface, message_rect)
 
         pygame.display.flip()
