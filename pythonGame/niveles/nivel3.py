@@ -1,6 +1,6 @@
 import random
 from entities.enemy import Enemy3
-from entities.boss import Boss
+from entities.boss import Boss3
 
 def cargar_nivel(game):
     game.enemies = []
@@ -25,10 +25,11 @@ def cargar_nivel(game):
 
 def update_level(game):
     # Verificar si debemos spawnear el jefe
-    if not game.boss_spawned and game.enemies_killed >= 19:  # Reducimos de 8 a 6 enemigos para spawnear el jefe
-        game.boss = Boss(game.level, (1920, 1080))  # Usamos el tamaño del mapa directamente
+    if not game.boss_spawned and game.enemies_killed >= 15:  # Menos enemigos para que aparezca más rápido
+        game.boss = Boss3(game.level, (1920, 1080))  # Usar el nuevo Boss3 mejorado
         game.boss_spawned = True
         game.enemies = []  # Limpiar enemigos normales cuando aparece el jefe
+        print("🔥 ¡BOSS NIVEL 3 APARECE! Prepárate para la batalla!")
     
     # Actualizar el jefe si existe
     if game.boss:
