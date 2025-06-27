@@ -26,12 +26,29 @@ class Enemy:
             self.rect.y = random.randint(0, map_size[1]-self.rect.height)
         self.speed = 1.5 + (level * 0.5)
 
-    def update(self, player):
+    def update(self, player, barras=None):
         dx = player.rect.centerx - self.rect.centerx
         dy = player.rect.centery - self.rect.centery
         dist = max(1, (dx**2 + dy**2) ** 0.5)
-        self.rect.x += int(self.speed * dx / dist)
-        self.rect.y += int(self.speed * dy / dist)
+        move_x = int(self.speed * dx / dist)
+        move_y = int(self.speed * dy / dist)
+        # Movimiento y colisión por ejes
+        self.rect.x += move_x
+        if barras:
+            for barra in barras:
+                if self.rect.colliderect(barra):
+                    if move_x > 0:
+                        self.rect.right = barra.left
+                    if move_x < 0:
+                        self.rect.left = barra.right
+        self.rect.y += move_y
+        if barras:
+            for barra in barras:
+                if self.rect.colliderect(barra):
+                    if move_y > 0:
+                        self.rect.bottom = barra.top
+                    if move_y < 0:
+                        self.rect.top = barra.bottom
         # Dirección para animación
         if abs(dx) > abs(dy):
             self.direction = 'right' if dx > 0 else 'left'
@@ -69,12 +86,29 @@ class Enemy2:
             self.rect.y = random.randint(0, map_size[1]-self.rect.height)
         self.speed = 1.5 + (level * 0.5)
 
-    def update(self, player):
+    def update(self, player, barras=None):
         dx = player.rect.centerx - self.rect.centerx
         dy = player.rect.centery - self.rect.centery
         dist = max(1, (dx**2 + dy**2) ** 0.5)
-        self.rect.x += int(self.speed * dx / dist)
-        self.rect.y += int(self.speed * dy / dist)
+        move_x = int(self.speed * dx / dist)
+        move_y = int(self.speed * dy / dist)
+        # Movimiento y colisión por ejes
+        self.rect.x += move_x
+        if barras:
+            for barra in barras:
+                if self.rect.colliderect(barra):
+                    if move_x > 0:
+                        self.rect.right = barra.left
+                    if move_x < 0:
+                        self.rect.left = barra.right
+        self.rect.y += move_y
+        if barras:
+            for barra in barras:
+                if self.rect.colliderect(barra):
+                    if move_y > 0:
+                        self.rect.bottom = barra.top
+                    if move_y < 0:
+                        self.rect.top = barra.bottom
         if abs(dx) > abs(dy):
             self.direction = 'right' if dx > 0 else 'left'
         else:

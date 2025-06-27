@@ -2,14 +2,35 @@ from entities.enemy import Enemy
 from entities.smart_enemy import SmartEnemy
 from entities.trap import Trap
 from entities.boss import Boss
+import pygame
+
+# BARRAS 
+# x: posición horizontal, y: posición vertical, ancho: tamaño horizontal, alto: tamaño vertical
+# BARRAS 4 PAREDES
+BARRAS = [
+    pygame.Rect(20, 0, 40, 1080),    # Barra vertical izquierda
+    pygame.Rect(1920-80, 0, 80, 1080),    # Barra vertical derecha más ancha
+    pygame.Rect(0, 0, 1920, 200),    # Barra horizontal arriba más ancha
+    pygame.Rect(0, 930, 1920, 180),    # Barra horizontal abajo más ancha hacia arriba
+    pygame.Rect(1300, 700, 330, 100),    # TANQUE DERECHO
+    pygame.Rect(220, 620, 250, 100),    # TANQUE IZQUIERDO
+    pygame.Rect(785, 700, 350, 350),    # ESTRUCTURA CON ESTRELLA más grande y más arriba
+]
+BARRAS_INVISIBLES = False
 
 def cargar_nivel(game):
+    # Música de fondo para el nivel 4
+    pygame.mixer.music.load('soundtracks/Level4 OST.mp3')  # Cambia el archivo si quieres otra música
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.1)  # Cambia el volumen (0.0 a 1.0)
     game.enemies = []
     game.smart_enemies = []
     game.traps = []
     game.boss = None
     game.enemies_killed = 0
     game.boss_spawned = False
+    game.barras = BARRAS
+    game.barras_invisibles = BARRAS_INVISIBLES
 
     # Enemigos normales
     for _ in range(6 + game.level):
