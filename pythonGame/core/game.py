@@ -54,10 +54,17 @@ class Game:
         # Inicializar el estado del juego para el primer nivel
         self._initialize_game_state(initial_level_number)
 
-    def _initialize_game_state(self, level_number):
+    def _initialize_game_state(self, level_number, preserve_lives=None):
         self.level = level_number
         self.enemies_killed = 0
-        self.player = Player()
+        # Si preserve_lives es None, crear nuevo jugador (inicio del juego)
+        # Si preserve_lives tiene un valor, mantener las vidas del nivel anterior
+        if preserve_lives is None:
+            self.player = Player()
+        else:
+            current_lives = preserve_lives
+            self.player = Player()
+            self.player.lives = current_lives
         self.enemies = []
         self.bullets = []
         self.enemy_bullets = []  # Balas de los enemigos
@@ -121,10 +128,14 @@ class Game:
         # Agregar puntos por completar nivel
         self.add_score(self.score_per_level)
         
+        # Guardar las vidas actuales antes de cambiar de nivel
+        current_lives = self.player.lives
+        
         next_level_module = self.level_manager.next_level(self.username)
         if next_level_module:
             show_level_transition(self.screen, self.level_manager.get_current_level_number())
-            self._initialize_game_state(self.level_manager.get_current_level_number())
+            # Pasar las vidas actuales al nuevo nivel
+            self._initialize_game_state(self.level_manager.get_current_level_number(), preserve_lives=current_lives)
         else:
             print("No more levels available.")
             from screens.game_over import show_victory
@@ -134,8 +145,11 @@ class Game:
     def previous_level(self):
         prev_level_num = self.level - 1
         if prev_level_num > 0:
+            # Guardar las vidas actuales antes de cambiar de nivel
+            current_lives = self.player.lives
             self.level_manager.update_player_progress(self.username, prev_level_num)
-            self._initialize_game_state(prev_level_num)
+            # Pasar las vidas actuales al nivel anterior
+            self._initialize_game_state(prev_level_num, preserve_lives=current_lives)
         else:
             print("Already at the first level.")
 
