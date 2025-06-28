@@ -8,6 +8,8 @@
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -23,6 +25,8 @@
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -38,6 +42,8 @@
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -53,21 +59,8 @@
             <dict>
                 <key>aliases</key>
                 <array/>
-                <key>spriteOffset</key>
-                <string>{0,0}</string>
-                <key>spriteSize</key>
-                <string>{266,150}</string>
-                <key>spriteSourceSize</key>
-                <string>{266,150}</string>
-                <key>textureRect</key>
-                <string>{{798,0},{266,150}}</string>
-                <key>textureRotated</key>
-                <false/>
-            </dict>
-            <key>frame_019.png</key>
-            <dict>
-                <key>aliases</key>
-                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -79,10 +72,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_020.png</key>
+            <key>frame_019.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -94,10 +89,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_021.png</key>
+            <key>frame_020.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -109,25 +106,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_022.png</key>
+            <key>frame_021.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
-                <key>spriteOffset</key>
-                <string>{0,0}</string>
-                <key>spriteSize</key>
-                <string>{266,150}</string>
-                <key>spriteSourceSize</key>
-                <string>{266,150}</string>
-                <key>textureRect</key>
-                <string>{{798,150},{266,150}}</string>
-                <key>textureRotated</key>
-                <false/>
-            </dict>
-            <key>frame_034.png</key>
-            <dict>
-                <key>aliases</key>
-                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -139,10 +123,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_035.png</key>
+            <key>frame_022.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -154,10 +140,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_036.png</key>
+            <key>frame_034.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -169,25 +157,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_037.png</key>
+            <key>frame_035.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
-                <key>spriteOffset</key>
-                <string>{0,0}</string>
-                <key>spriteSize</key>
-                <string>{266,150}</string>
-                <key>spriteSourceSize</key>
-                <string>{266,150}</string>
-                <key>textureRect</key>
-                <string>{{798,300},{266,150}}</string>
-                <key>textureRotated</key>
-                <false/>
-            </dict>
-            <key>frame_053.png</key>
-            <dict>
-                <key>aliases</key>
-                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -199,10 +174,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_054.png</key>
+            <key>frame_036.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -214,10 +191,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_055.png</key>
+            <key>frame_037.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -229,10 +208,12 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
-            <key>frame_056.png</key>
+            <key>frame_053.png</key>
             <dict>
                 <key>aliases</key>
                 <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
                 <key>spriteOffset</key>
                 <string>{0,0}</string>
                 <key>spriteSize</key>
@@ -240,7 +221,58 @@
                 <key>spriteSourceSize</key>
                 <string>{266,150}</string>
                 <key>textureRect</key>
-                <string>{{798,450},{266,150}}</string>
+                <string>{{0,600},{266,150}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>frame_054.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{266,150}</string>
+                <key>spriteSourceSize</key>
+                <string>{266,150}</string>
+                <key>textureRect</key>
+                <string>{{266,600},{266,150}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>frame_055.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{266,150}</string>
+                <key>spriteSourceSize</key>
+                <string>{266,150}</string>
+                <key>textureRect</key>
+                <string>{{532,600},{266,150}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>frame_056.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>anchor</key>
+                <string>{0.5,0.5}</string>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{266,150}</string>
+                <key>spriteSourceSize</key>
+                <string>{266,150}</string>
+                <key>textureRect</key>
+                <string>{{0,750},{266,150}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -254,13 +286,13 @@
             <key>premultiplyAlpha</key>
             <false/>
             <key>realTextureFileName</key>
-            <string>enemigos2.png</string>
+            <string>nivel2.png</string>
             <key>size</key>
-            <string>{1064,600}</string>
+            <string>{798,900}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:49536929ddd1845026f3543ea086965d:e26ca80db5b6935b85d5d45b7dc2f91b:798ef4bdfe2a3d551ce674fd8e518133$</string>
+            <string>$TexturePacker:SmartUpdate:615b3dbdac5f71a4f31c16154051c295:e26ca80db5b6935b85d5d45b7dc2f91b:b021fa3a1cf1a46083053326a8d46101$</string>
             <key>textureFileName</key>
-            <string>enemigos2.png</string>
+            <string>nivel2.png</string>
         </dict>
     </dict>
 </plist>
