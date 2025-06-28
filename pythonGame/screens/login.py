@@ -8,12 +8,12 @@ BG_COLOR = (40, 44, 52)        # Gris oscuro para el fondo (usaremos una imagen)
 INPUT_BG_COLOR = (60, 65, 75)  # Gris un poco más claro para campos de entrada
 TEXT_COLOR = (240, 240, 240)   # Gris muy claro para el texto
 PLACEHOLDER_COLOR = (120, 120, 120) # Gris para el placeholder
-BUTTON_COLOR = (50, 150, 200)  # Azul medio para el botón principal (Iniciar Sesión)
-BUTTON_HOVER_COLOR = (70, 170, 220) # Azul más claro para el hover
-REGISTER_BUTTON_COLOR = (80, 180, 100) # Verde medio para el botón de Registrar
-REGISTER_BUTTON_HOVER_COLOR = (100, 200, 120) # Verde más claro para el hover
-LEADERBOARD_BUTTON_COLOR = (200, 150, 50) # Naranja para el botón de ranking
-LEADERBOARD_BUTTON_HOVER_COLOR = (220, 170, 70) # Naranja más claro para el hover
+BUTTON_COLOR = (53, 65, 61) # Azul medio para el botón principal (Iniciar Sesión)
+BUTTON_HOVER_COLOR = (59, 168, 56) # Azul más claro para el hover
+REGISTER_BUTTON_COLOR = (53, 65, 61) # Verde medio para el botón de Registrar
+REGISTER_BUTTON_HOVER_COLOR = (59, 168, 56) # Verde más claro para el hover
+LEADERBOARD_BUTTON_COLOR = (53, 65, 61) # Naranja para el botón de ranking
+LEADERBOARD_BUTTON_HOVER_COLOR = (59, 168, 56) # Naranja más claro para el hover
 ERROR_COLOR = (255, 80, 80)    # Rojo para mensajes de error
 SUCCESS_COLOR = (121, 195, 152) # Verde para mensajes de éxito
 BORDER_COLOR = (80, 80, 80)    # Color del borde
@@ -159,12 +159,12 @@ def show_login(screen, user_auth):
         # Alternar entre verde flúor brillante y blanco
         if brightness > 0.5:
             # Verde flúor brillante
-            color = (0, 255, 0)  # Verde flúor puro
+            color = (33, 183, 33)  # Verde flúor puro
         else:
             # Blanco
-            color = (255, 255, 255)  # Blanco
+            color = (53, 65, 61)  # Blanco
         
-        title_surface = FONT_LARGE.render('|Bienvenido Jugador|', True, color)
+        title_surface = FONT_LARGE.render(' . :            BLOOD PLAGUE            : . ', True, color)
         title_rect = title_surface.get_rect(center=(screen.get_width()//2, screen.get_height()//2 - 180))
         screen.blit(title_surface, title_rect)
 
