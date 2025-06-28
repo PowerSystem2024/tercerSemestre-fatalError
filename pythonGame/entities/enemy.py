@@ -6,12 +6,13 @@ import math
 class Enemy:
     def __init__(self, level, map_size, pos=None):
         self.spritesheet = SpriteSheet('assets/enemigos/enemigoslevel1.png', 'assets/enemigos/enemigoslevel1.plist', scale=0.5)
-        # Animaciones: asumo 4 direcciones, 4 frames cada una (ajustar si es necesario)
+        # Corrigiendo el mapeo de animaciones - intercambiando right y down
+        # left y up están correctos, solo right estaba mal
         self.animations = {
-            'down': self.spritesheet.get_images_by_range(0, 4),
-            'left': self.spritesheet.get_images_by_range(4, 8),
-            'right': self.spritesheet.get_images_by_range(8, 12),
-            'up': self.spritesheet.get_images_by_range(12, 16)
+            'down': self.spritesheet.get_images_by_range(4, 8),    # frame_039-042 (intercambiado con right)
+            'left': self.spritesheet.get_images_by_range(0, 4),    # frame_004-007 (correcto)  
+            'right': self.spritesheet.get_images_by_range(12, 16), # frame_055-058 (intercambiado con down)
+            'up': self.spritesheet.get_images_by_range(8, 12)      # frame_048-051 (correcto)
         }
         self.direction = 'down'
         self.anim_index = 0
