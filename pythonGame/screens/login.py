@@ -20,9 +20,18 @@ BORDER_COLOR = (80, 80, 80)    # Color del borde
 
 # --- Fuentes --- #
 pygame.font.init()
-FONT_SMALL = pygame.font.Font(None, 28) # Ligeramente más pequeña
-FONT_MEDIUM = pygame.font.Font(None, 36) # Ajustada
-FONT_LARGE = pygame.font.Font(None, 50)  # Ligeramente más pequeña
+# Cargar la fuente Bloody desde assets
+try:
+    font_path = os.path.join('assets', 'transicionNiveles', 'BLOODY.TTF')
+    FONT_SMALL = pygame.font.Font(font_path, 20) # Ligeramente más pequeña
+    FONT_MEDIUM = pygame.font.Font(font_path, 20) # Ajustada
+    FONT_LARGE = pygame.font.Font(font_path, 50)  # Ligeramente más pequeña
+except Exception as e:
+    print(f"No se pudo cargar la fuente Bloody: {e}")
+    # Fallback a fuentes por defecto si no se puede cargar
+    FONT_SMALL = pygame.font.Font(None, 28)
+    FONT_MEDIUM = pygame.font.Font(None, 36)
+    FONT_LARGE = pygame.font.Font(None, 50)
 
 def show_login(screen, user_auth):
     # Inicializar el mixer de pygame y reproducir la música de login
@@ -37,6 +46,13 @@ def show_login(screen, user_auth):
     # Cargar y escalar la imagen de fondo
     background_image = pygame.image.load('assets/mapa/MENU.png').convert()
     background_image = pygame.transform.scale(background_image, screen.get_size())
+    
+    # Cargar imagen de fondo para botones
+    try:
+        button_bg_image = pygame.image.load('assets/transicionNiveles/DungeonText.png').convert_alpha()
+    except Exception as e:
+        print(f"No se pudo cargar la imagen de fondo para botones: {e}")
+        button_bg_image = None
 
     # Rectángulos de los elementos (ajustados para mejor espaciado)
     input_box_user = pygame.Rect(screen.get_width()//2 - 170, screen.get_height()//2 - 80, 340, 45)
@@ -76,7 +92,7 @@ def show_login(screen, user_auth):
                 # Clic en botones
                 if button_login.collidepoint(event.pos):
                     if not username_text.strip() or not password_text.strip():
-                        message = "Usuario y contraseña no pueden estar vacíos."
+                        message = "Usuario y contrasena no pueden estar vacios."
                         message_color = ERROR_COLOR
                     else:
                         success, msg = user_auth.login(username_text, password_text)
@@ -136,7 +152,19 @@ def show_login(screen, user_auth):
         screen.blit(background_image, (0, 0))
 
         # --- Dibujar Título --- #
-        title_surface = FONT_LARGE.render('¡Bienvenido Jugador!', True, TEXT_COLOR)
+        # Efecto de brillo animado
+        import math
+        brightness = abs(math.sin(pygame.time.get_ticks() * 0.003))  # Animación basada en tiempo
+        
+        # Alternar entre verde flúor brillante y blanco
+        if brightness > 0.5:
+            # Verde flúor brillante
+            color = (0, 255, 0)  # Verde flúor puro
+        else:
+            # Blanco
+            color = (255, 255, 255)  # Blanco
+        
+        title_surface = FONT_LARGE.render('|Bienvenido Jugador|', True, color)
         title_rect = title_surface.get_rect(center=(screen.get_width()//2, screen.get_height()//2 - 180))
         screen.blit(title_surface, title_rect)
 
@@ -157,21 +185,21 @@ def show_login(screen, user_auth):
         # Contraseña
         pygame.draw.rect(screen, INPUT_BG_COLOR, input_box_pass, border_radius=5)
         pygame.draw.rect(screen, BORDER_COLOR if not active_pass else BUTTON_COLOR, input_box_pass, 2, border_radius=5)
-        pass_label = FONT_SMALL.render('Contraseña:', True, TEXT_COLOR)
-        screen.blit(pass_label, (input_box_pass.x, input_box_pass.y - 25))
+        pass_label = FONT_SMALL.render('Contrasena:', True, TEXT_COLOR)
+        screen.blit(pass_label, (input_box_pass.x, input_box_pass.y - 22))
         
         if password_text or active_pass:
             txt_surface_pass = FONT_MEDIUM.render('*' * len(password_text), True, TEXT_COLOR) # Display asterisks
             screen.blit(txt_surface_pass, (input_box_pass.x+10, input_box_pass.y+8)) # Ajuste vertical
         else:
-            placeholder_surface_pass = FONT_MEDIUM.render('Escribe tu contraseña', True, PLACEHOLDER_COLOR)
+            placeholder_surface_pass = FONT_MEDIUM.render('Escribe tu contrasena', True, PLACEHOLDER_COLOR)
             screen.blit(placeholder_surface_pass, (input_box_pass.x+10, input_box_pass.y+8)) # Ajuste vertical
 
         # --- Dibujar botones --- #
         # Botón Iniciar Sesión
         current_login_color = BUTTON_HOVER_COLOR if hover_login else BUTTON_COLOR
         pygame.draw.rect(screen, current_login_color, button_login, border_radius=5)
-        login_text_surface = FONT_MEDIUM.render('Iniciar Sesión', True, TEXT_COLOR)
+        login_text_surface = FONT_MEDIUM.render('Iniciar Sesion', True, TEXT_COLOR)
         login_text_rect = login_text_surface.get_rect(center=button_login.center)
         screen.blit(login_text_surface, login_text_rect)
 

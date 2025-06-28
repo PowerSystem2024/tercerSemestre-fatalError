@@ -53,23 +53,20 @@ class Player:
                 self.shoot_sound.play()
                 self.last_shot = now
 
-    def update(self, map_size):
+    def update(self, map_size, barras=None):
         # Actualizar sistema de invulnerabilidad
         if self.is_invulnerable:
             self.invulnerability_timer += 1/60.0  # Asumiendo 60 FPS
             self.blink_timer += 1/60.0
-            
             # Efecto de parpadeo
             if self.blink_timer >= self.blink_interval:
                 self.visible = not self.visible
                 self.blink_timer = 0
-            
             # Terminar invulnerabilidad
             if self.invulnerability_timer >= self.invulnerability_duration:
                 self.is_invulnerable = False
                 self.invulnerability_timer = 0
                 self.visible = True
-        
         keys = pygame.key.get_pressed()
         dx = dy = 0
         if keys[pygame.K_w]:
@@ -84,21 +81,32 @@ class Player:
         elif keys[pygame.K_d]:
             dx = self.speed
             self.direction = 'right'
+        # Movimiento y colisión por ejes
         self.rect.x += dx
+        if barras:
+            for barra in barras:
+                if self.rect.colliderect(barra):
+                    if dx > 0:
+                        self.rect.right = barra.left
+                    if dx < 0:
+                        self.rect.left = barra.right
         self.rect.y += dy
-        
+        if barras:
+            for barra in barras:
+                if self.rect.colliderect(barra):
+                    if dy > 0:
+                        self.rect.bottom = barra.top
+                    if dy < 0:
+                        self.rect.top = barra.bottom
         # Actualizar hitbox para que siga al jugador
         self.hitbox.center = self.rect.center
-        
         # Limitar a los bordes del mapa
         self.rect.left = max(0, self.rect.left)
         self.rect.top = max(0, self.rect.top)
         self.rect.right = min(map_size[0], self.rect.right)
         self.rect.bottom = min(map_size[1], self.rect.bottom)
-        
         # Actualizar hitbox después de limitar posición
         self.hitbox.center = self.rect.center
-        
         # Animación
         if dx != 0 or dy != 0:
             self.anim_timer += self.anim_speed

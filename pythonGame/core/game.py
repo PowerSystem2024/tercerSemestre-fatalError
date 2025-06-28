@@ -75,6 +75,17 @@ class Game:
             print(f"Could not load level {self.level}. Exiting game.")
             self.running = False
 
+        # Cambiar el fondo según el nivel
+        if self.level == 2:
+            self.background = pygame.image.load('assets/mapa/MAPA2.png').convert()
+        elif self.level == 3:
+            self.background = pygame.image.load('assets/mapa/MAPA3.png').convert()
+        elif self.level == 4:
+            self.background = pygame.image.load('assets/mapa/MAPA4.png').convert()
+        else:
+            self.background = pygame.image.load('assets/mapa/mapaUno.png').convert()
+        self.background = pygame.transform.scale(self.background, BACKGROUND_SIZE)
+
     def add_score(self, points):
         """Agregar puntos al score actual"""
         self.score += int(points * self.combo_multiplier)
@@ -193,7 +204,11 @@ class Game:
                     self.running = False
 
     def update(self):
-        self.player.update(MAP_SIZE)
+        # Actualizar jugador con colisiones si hay barras
+        if hasattr(self, 'barras'):
+            self.player.update(MAP_SIZE, self.barras)
+        else:
+            self.player.update(MAP_SIZE)
         for bullet in self.bullets[:]:
             bullet.update()
             # Verificar colisiones con enemigos normales
@@ -246,6 +261,10 @@ class Game:
 
         # Actualizar enemigos normales
         for enemy in self.enemies[:]:
+            # Si es el traidor, no debe atacar al jugador
+            if hasattr(self, 'traitor_enemy') and enemy is self.traitor_enemy and getattr(self, 'traitor_active', False):
+                # El movimiento y disparo del traidor se maneja en update_nivel2
+                continue
             enemy.update(self.player)
             
             # Recopilar balas de Enemy4
@@ -329,10 +348,21 @@ class Game:
         # Dibujar balas enemigas
         for bullet in self.enemy_bullets:
             bullet.draw(map_surface)
+        # --- DIBUJAR BALAS DEL TRAIDOR EN NIVEL 2 ---
+        if self.level == 2 and hasattr(self, 'traitor_bullets'):
+            for bullet in self.traitor_bullets:
+                bullet.draw(map_surface)
         # INICIO VIDAS DROPEADAS NIVEL 2
         if self.level == 2 and hasattr(self, 'lives_drops'):
             for life in self.lives_drops:
                 life.draw(map_surface)
+
+        # Dibuja las barras de colisión en el mapa, para que respeten la cámara
+        if hasattr(self, 'barras') and hasattr(self, 'barras_invisibles'):
+            if not self.barras_invisibles:
+                for barra in self.barras:
+                    pygame.draw.rect(map_surface, (0, 0, 255), barra, 3)  # Azul, borde de 3px
+
         self.screen.blit(map_surface, (0,0), camera)
         # HUD
         self.draw_score_info()
@@ -341,6 +371,7 @@ class Game:
         # Cursor: dibujar SIEMPRE al final, sobre la pantalla
         mx, my = pygame.mouse.get_pos()
         self.screen.blit(self.cursor_img, (mx-20, my-20))
+
         pygame.display.flip()
 
     def draw_score_info(self):

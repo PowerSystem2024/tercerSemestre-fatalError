@@ -2,6 +2,12 @@ import pygame
 import time
 
 def show_game_over(screen, user_auth, username, final_score):
+    import pygame
+    # Detener cualquier música anterior y reproducir la nueva música de Game Over
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('soundtracks/GameOverOst.mp3')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(1.0)  # Volumen máximo
     global fondo_img
     fondo_img = pygame.transform.scale(pygame.image.load("assets/transicionNiveles/fondogameover.png"), (screen.get_width(), screen.get_height()))
     
@@ -140,6 +146,12 @@ def render_text_fit_width(texto, font_path, color, max_width, initial_size, min_
     return text_surface, font
 
 def show_victory(screen, user_auth, username, final_score):
+    import pygame
+    # Detener cualquier música anterior y reproducir la canción de victoria
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('soundtracks/QUEEN.mp3')
+    pygame.mixer.music.play(-1)
+    pygame.mixer.music.set_volume(0.1)  # Volumen máximo
     global fondo_img
     fondo_img = pygame.transform.scale(pygame.image.load("assets/transicionNiveles/imgvictoria.png"), (screen.get_width(), screen.get_height()))
 
