@@ -34,8 +34,8 @@ def cargar_nivel(game):
     game.barras = BARRAS
     game.barras_invisibles = BARRAS_INVISIBLES
 
-    # Enemigos con ataques a distancia (Enemy4)
-    for _ in range(4 + game.level):
+    # Enemigos con ataques a distancia (Enemy4) - aumentar cantidad
+    for _ in range(7 + game.level):  # Más enemigos iniciales (era 4)
         enemy = Enemy4(game.level, (1920, 1080))
         # Posicionar lejos del jugador
         while True:
@@ -49,14 +49,16 @@ def cargar_nivel(game):
                 break
         game.enemies.append(enemy)
 
-    # Enemigos inteligentes (reducidos porque los Enemy4 son más peligrosos)
-    for _ in range(1 + game.level//2):
+    # Enemigos inteligentes (aumentar cantidad)
+    for _ in range(2 + game.level//2):  # Más enemigos inteligentes (era 1)
         smart_enemy = SmartEnemy(game.player)
         game.smart_enemies.append(smart_enemy)
 
-    # Trampas en el mapa (posiciones fijas)
+    # Trampas en el mapa (posiciones fijas) - añadir más trampas
     game.traps.append(Trap(400, 300, 80, 30))
     game.traps.append(Trap(600, 200, 100, 40))
+    game.traps.append(Trap(800, 500, 90, 35))  # Nueva trampa
+    game.traps.append(Trap(1200, 400, 85, 32))  # Nueva trampa
 
 def update_level(game):
     # Actualizar enemigos inteligentes
@@ -70,8 +72,22 @@ def update_level(game):
             if hit_successful:
                 game.traps.remove(trap)
 
-    # Verificar si debemos spawnear el jefe
-    if not game.boss_spawned and game.enemies_killed >= 8:
+    # Continuar spawneando enemigos hasta alcanzar 20 kills
+    while len(game.enemies) < (7 + game.level) and game.enemies_killed < 20 and not game.boss_spawned:
+        enemy = Enemy4(game.level, (1920, 1080))
+        # Posicionar lejos del jugador
+        while True:
+            enemy.rect.x = random.randint(0, 1920 - enemy.rect.width)
+            enemy.rect.y = random.randint(0, 1080 - enemy.rect.height)
+            dx = enemy.rect.centerx - game.player.rect.centerx
+            dy = enemy.rect.centery - game.player.rect.centery
+            distance = (dx**2 + dy**2) ** 0.5
+            if distance > 400:
+                break
+        game.enemies.append(enemy)
+
+    # Verificar si debemos spawnear el jefe - ahora a los 20 kills
+    if not game.boss_spawned and game.enemies_killed >= 20:
         print(f"🔥 SPAWNEANDO BOSS DEL NIVEL 4! Enemigos eliminados: {game.enemies_killed}")
         game.boss = Boss4(game.level, (1920, 1080))
         game.boss_spawned = True

@@ -233,56 +233,161 @@ class Boss(Enemy):
 class Boss3(Boss):
     """Boss especializado para el nivel 3 - Táctico con ataques sorpresivos"""
     def __init__(self, level, map_size, pos=None):
-        super().__init__(level, map_size, pos)
-        # Boss del nivel 3 es más fuerte
-        self.lives = 10  # Más vidas
-        self.max_lives = 10
-        self.base_speed = self.speed * 0.8  # Velocidad base más lenta
+        # No llamar super().__init__ para evitar cargar sprites incorrectos
+        # Cargar spritesheet de enemigos nivel 3
+        self.spritesheet = SpriteSheet('assets/enemigos/nenemigos3.png', 'assets/enemigos/nenemigos3.plist', scale=1.8)
+        # Spritesheet para ataques
+        self.attack_spritesheet = SpriteSheet('assets/enemigos/ataques/ataque-enemigo-3.png', 'assets/enemigos/ataques/ataque-enemigo-3.plist', scale=1.8)
+        
+        # Animaciones de movimiento usando los nombres específicos del plist
+        self.move_animations = {
+            'down': [
+                self.spritesheet.get_image_by_name('abajo1.png'),
+                self.spritesheet.get_image_by_name('abajo2.png'),
+                self.spritesheet.get_image_by_name('abajo3.png'),
+                self.spritesheet.get_image_by_name('abajo4.png')
+            ],
+            'left': [
+                self.spritesheet.get_image_by_name('izquierda1.png'),
+                self.spritesheet.get_image_by_name('izquierda2.png'),
+                self.spritesheet.get_image_by_name('izquierda3.png'),
+                self.spritesheet.get_image_by_name('izquierda4.png')
+            ],
+            'right': [
+                self.spritesheet.get_image_by_name('derecha1.png'),
+                self.spritesheet.get_image_by_name('derecha2.png'),
+                self.spritesheet.get_image_by_name('derecha3.png'),
+                self.spritesheet.get_image_by_name('derecha4.png')
+            ],
+            'up': [
+                self.spritesheet.get_image_by_name('arriba1.png'),
+                self.spritesheet.get_image_by_name('arriba2.png'),
+                self.spritesheet.get_image_by_name('arriba3.png'),
+                self.spritesheet.get_image_by_name('arriba4.png')
+            ]
+        }
+        
+        # Animaciones de ataque
+        self.attack_animations = {
+            'down': [
+                self.attack_spritesheet.get_image_by_name('abajoataque1.png'),
+                self.attack_spritesheet.get_image_by_name('abajoataque2.png'),
+                self.attack_spritesheet.get_image_by_name('abajoataque3.png'),
+                self.attack_spritesheet.get_image_by_name('abajoataque4.png')
+            ],
+            'left': [
+                self.attack_spritesheet.get_image_by_name('ataqueizquierda1.png'),
+                self.attack_spritesheet.get_image_by_name('ataqueizquierda2.png'),
+                self.attack_spritesheet.get_image_by_name('ataqueizquierda3.png'),
+                self.attack_spritesheet.get_image_by_name('ataqueizquierda4.png')
+            ],
+            'right': [
+                self.attack_spritesheet.get_image_by_name('ataquederecha1.png'),
+                self.attack_spritesheet.get_image_by_name('ataquederecha2.png'),
+                self.attack_spritesheet.get_image_by_name('ataquederecha3.png'),
+                self.attack_spritesheet.get_image_by_name('ataquederecha4.png')
+            ],
+            'up': [
+                self.attack_spritesheet.get_image_by_name('ataquearriba1.png'),
+                self.attack_spritesheet.get_image_by_name('ataquearriba2.png'),
+                self.attack_spritesheet.get_image_by_name('ataquearriba3.png'),
+                self.attack_spritesheet.get_image_by_name('ataquearriba4.png')
+            ]
+        }
+        
+        # Inicializar propiedades básicas
+        self.direction = 'down'
+        self.anim_index = 0
+        self.anim_timer = 0
+        self.anim_speed = 0.15
+        self.image = self.move_animations[self.direction][self.anim_index]
+        self.rect = self.image.get_rect()
+        if pos:
+            self.rect.center = pos
+        else:
+            self.rect.center = (map_size[0]//2, map_size[1]//2)
+        
+        # Boss del nivel 3 es más fuerte y ágil
+        self.lives = 15  # Más vidas que antes (era 10)
+        self.max_lives = 15
+        self.base_speed = 2.5  # Más ágil que antes (era 1.5 * 0.8)
         self.speed = self.base_speed
         
-        # Sistema de ataques sorpresivos
-        self.dash_cooldown_min = 4.0  # Mínimo 4 segundos
-        self.dash_cooldown_max = 8.0  # Máximo 8 segundos
+        # Sistema de ataques sorpresivos mejorado
+        self.dash_cooldown_min = 3.0  # Más frecuente (era 4.0)
+        self.dash_cooldown_max = 6.0  # Más frecuente (era 8.0)
         self.current_dash_cooldown = self.get_random_cooldown()
         self.last_dash_time = 0
         self.dashing = False
-        self.dash_duration = 0.8  # Dash dura 0.8 segundos
+        self.dash_duration = 1.0  # Dash más largo (era 0.8)
         self.dash_timer = 0
-        self.dash_speed = self.base_speed * 3.5  # 3.5x más rápido durante dash
+        self.dash_speed = self.base_speed * 4.0  # Más rápido durante dash (era 3.5x)
+        
+        # Sistema de ataque especial
+        self.attacking = False
+        self.attack_timer = 0
+        self.attack_duration = 0.6  # Duración del ataque
+        self.attack_cooldown = 4.0  # Cooldown entre ataques especiales
+        self.last_attack_time = 0
         
         # Patrón de movimiento táctico
         self.movement_timer = 0
-        self.movement_phase = 0  # 0: lento, 1: dash
-    
+        self.movement_phase = 0  # 0: lento, 1: dash, 2: attack
+        
+        print("🔥 BOSS NIVEL 3 MEJORADO - Skin nenemigos3 con ataques especiales!")
+
     def get_random_cooldown(self):
         """Genera un cooldown aleatorio para el dash"""
         import random
         return random.uniform(self.dash_cooldown_min, self.dash_cooldown_max)
         
     def update(self, player):
-        # Llamar al update básico del Boss (sin el poder especial)
-        Enemy.update(self, player)
-        
         current_time = pygame.time.get_ticks() / 1000.0
         self.movement_timer += 1/60.0
         
+        # Calcular dirección hacia el jugador para animaciones
+        dx = player.rect.centerx - self.rect.centerx
+        dy = player.rect.centery - self.rect.centery
+        distance = (dx**2 + dy**2) ** 0.5
+        
+        # Determinar dirección para animación
+        if abs(dx) > abs(dy):
+            self.direction = 'right' if dx > 0 else 'left'
+        else:
+            self.direction = 'down' if dy > 0 else 'up'
+        
+        # Sistema de ataque especial
+        if not self.attacking and not self.dashing and current_time - self.last_attack_time >= self.attack_cooldown:
+            if distance < 150:  # Rango de ataque cercano
+                self.start_attack()
+                self.last_attack_time = current_time
+        
         # Sistema de dash sorpresivo
-        if not self.dashing and current_time - self.last_dash_time >= self.current_dash_cooldown:
-            # Verificar si el jugador está en rango para dash
-            dx = player.rect.centerx - self.rect.centerx
-            dy = player.rect.centery - self.rect.centery
-            distance = (dx**2 + dy**2) ** 0.5
-            
+        if not self.dashing and not self.attacking and current_time - self.last_dash_time >= self.current_dash_cooldown:
             if 200 < distance < 400:  # Solo dash si está a distancia media
                 self.start_dash(player)
                 self.last_dash_time = current_time
-                self.current_dash_cooldown = self.get_random_cooldown()  # Nuevo cooldown aleatorio
+                self.current_dash_cooldown = self.get_random_cooldown()
         
-        if self.dashing:
+        # Ejecutar estados
+        if self.attacking:
+            self.execute_attack()
+        elif self.dashing:
             self.execute_dash()
         else:
-            # Movimiento táctico lento
+            # Movimiento táctico normal
             self.tactical_movement(player)
+        
+        # Actualizar animaciones
+        self.anim_timer += self.anim_speed
+        if self.anim_timer >= 1:
+            if self.attacking:
+                self.anim_index = (self.anim_index + 1) % len(self.attack_animations[self.direction])
+                self.image = self.attack_animations[self.direction][self.anim_index]
+            else:
+                self.anim_index = (self.anim_index + 1) % len(self.move_animations[self.direction])
+                self.image = self.move_animations[self.direction][self.anim_index]
+            self.anim_timer = 0
     
     def start_dash(self, player):
         """Inicia un dash sorpresivo hacia el jugador"""
@@ -298,6 +403,33 @@ class Boss3(Boss):
         self.dash_direction_y = dy / distance
         
         print("⚡ BOSS NIVEL 3 DASH SORPRESIVO!")
+    
+    def start_attack(self):
+        """Inicia un ataque especial"""
+        self.attacking = True
+        self.attack_timer = 0
+        self.anim_index = 0  # Reiniciar animación de ataque
+        print("💥 BOSS NIVEL 3 ATAQUE ESPECIAL!")
+    
+    def execute_attack(self):
+        """Ejecuta el ataque especial"""
+        self.attack_timer += 1/60.0
+        
+        if self.attack_timer >= self.attack_duration:
+            # Terminar ataque
+            self.attacking = False
+            self.anim_index = 0  # Reiniciar para animación de movimiento
+            print("✨ Ataque especial completado")
+    
+    def get_attack_rect(self):
+        """Devuelve el rectángulo de ataque cuando está atacando"""
+        if self.attacking and self.attack_timer > 0.2:  # Después de un pequeño delay
+            # Crear rectángulo de ataque más grande que el boss
+            attack_size = 80
+            attack_rect = pygame.Rect(0, 0, attack_size, attack_size)
+            attack_rect.center = self.rect.center
+            return attack_rect
+        return None
     
     def execute_dash(self):
         """Ejecuta el dash rápido"""
@@ -319,8 +451,43 @@ class Boss3(Boss):
             print("💨 Dash completado - Boss vuelve a modo táctico")
     
     def draw(self, surface):
-        # Llamar al draw del Boss padre
-        super().draw(surface)
+        # Dibujar el boss con la nueva skin
+        surface.blit(self.image, self.rect)
+        
+        # Dibujar barra de vida del boss
+        if self.lives > 0:
+            bar_width = 250
+            bar_height = 25
+            bar_x = surface.get_width() // 2 - bar_width // 2
+            bar_y = 40
+            
+            # Fondo de la barra
+            pygame.draw.rect(surface, (60, 0, 0), (bar_x, bar_y, bar_width, bar_height))
+            
+            # Barra de vida actual
+            current_width = int((self.lives / self.max_lives) * bar_width)
+            color = (255, 150, 0)  # Naranja para Boss3
+            pygame.draw.rect(surface, color, (bar_x, bar_y, current_width, bar_height))
+            
+            # Borde
+            pygame.draw.rect(surface, (255, 215, 0), (bar_x, bar_y, bar_width, bar_height), 3)
+            
+            # Texto del boss
+            font = pygame.font.Font(None, 32)
+            text = font.render("⚔️ BOSS NIVEL 3 - GUERRERO ⚔️", True, (255, 150, 0))
+            text_rect = text.get_rect(center=(surface.get_width() // 2, bar_y - 25))
+            surface.blit(text, text_rect)
+        
+        # Efecto visual durante el ataque
+        if self.attacking:
+            # Crear efecto de ataque brillante
+            attack_color = (255, 255, 100, 180)  # Amarillo brillante
+            attack_size = 25
+            
+            # Dibujar aura de ataque
+            attack_surface = pygame.Surface((attack_size*4, attack_size*4), pygame.SRCALPHA)
+            pygame.draw.circle(attack_surface, attack_color, (attack_size*2, attack_size*2), attack_size*2)
+            surface.blit(attack_surface, (self.rect.centerx - attack_size*2, self.rect.centery - attack_size*2))
         
         # Efecto visual durante el dash
         if self.dashing:
@@ -388,9 +555,16 @@ class Boss4:
         
         # Estadísticas del boss
         self.speed = 1.5  # Más lento pero más peligroso
-        self.lives = 12  # Aún más vidas porque es el boss final
-        self.max_lives = 12  # Para la barra de vida
+        self.lives = 30  # Extremadamente resistente (era 20)
+        self.max_lives = 30  # Para la barra de vida
         self.direction = 'down'
+        
+        # Sistema de resistencia
+        self.resistance_active = False
+        self.resistance_timer = 0
+        self.resistance_duration = 10.0  # 10 segundos de resistencia (era 8)
+        self.resistance_cooldown = 3.0  # Solo 3 segundos entre activaciones (era 5)
+        self.last_resistance_time = 0
         
         # Sistema de ataque múltiple
         self.bullets = []
@@ -415,6 +589,18 @@ class Boss4:
         
         # Actualizar balas del boss
         self.bullets = [bullet for bullet in self.bullets if bullet.update()]
+        
+        # Sistema de resistencia
+        if not self.resistance_active and current_time - self.last_resistance_time >= self.resistance_cooldown:
+            # Activar resistencia más frecuentemente - cuando tenga 80% o menos vida
+            if self.lives <= self.max_lives * 0.8:  # Cuando tenga 80% o menos vida (era 60%)
+                self.activate_resistance()
+                self.last_resistance_time = current_time
+        
+        if self.resistance_active:
+            self.resistance_timer += 1/60.0
+            if self.resistance_timer >= self.resistance_duration:
+                self.deactivate_resistance()
         
         # Patrón de movimiento alternativo
         self.movement_timer += 1/60.0
@@ -474,6 +660,45 @@ class Boss4:
         if self.shoot_sound:
             self.shoot_sound.play()
 
+    def activate_resistance(self):
+        """Activa la resistencia del boss final - ahora más poderosa"""
+        self.resistance_active = True
+        self.resistance_timer = 0
+        self.speed *= 1.5  # Más rápido durante resistencia (era 1.3)
+        self.attack_cooldown *= 0.7  # Ataca más frecuentemente durante resistencia
+        print("🔥🛡️ BOSS FINAL ACTIVÓ RESISTENCIA SUPREMA! ¡CASI INVENCIBLE!")
+
+    def deactivate_resistance(self):
+        """Desactiva la resistencia del boss final"""
+        self.resistance_active = False
+        self.resistance_timer = 0
+        self.speed /= 1.5  # Restaurar velocidad
+        self.attack_cooldown /= 0.7  # Restaurar velocidad de ataque
+        print("💨 Resistencia Suprema desactivada - Boss Final temporalmente vulnerable")
+
+    def take_damage(self, damage=1):
+        """Método personalizado para recibir daño con resistencia extrema"""
+        if self.resistance_active:
+            # Con resistencia: extremadamente resistente
+            import random
+            if random.random() < 0.15:  # Solo 15% de probabilidad de hacer daño (era 25%)
+                self.lives -= 1
+                print(f"🛡️💥 Boss Final con resistencia recibió daño! Vidas: {self.lives}")
+                return True
+            else:
+                print(f"🛡️ ¡ATAQUE COMPLETAMENTE BLOQUEADO!")
+                return False
+        else:
+            # Sin resistencia: aún así más resistente que otros bosses
+            import random
+            if random.random() < 0.7:  # 70% de probabilidad de hacer daño (no siempre)
+                self.lives -= 1
+                print(f"💥 Boss Final recibió daño. Vidas: {self.lives}")
+                return True
+            else:
+                print(f"🛡️ Boss Final esquivó el ataque!")
+                return False
+
     def get_bullets(self):
         """Devuelve las balas del boss para manejo externo"""
         return self.bullets
@@ -489,6 +714,18 @@ class Boss4:
         for bullet in self.bullets:
             bullet.draw(surface)
         
+        # Dibujar efecto de resistencia
+        if self.resistance_active:
+            # Efecto de brillo/aura dorada alrededor del boss
+            glow_size = 15
+            glow_color = (255, 215, 0, 120)  # Dorado semi-transparente
+            
+            # Crear superficie temporal para el efecto
+            glow_surface = pygame.Surface((self.rect.width + glow_size*2, self.rect.height + glow_size*2), pygame.SRCALPHA)
+            pygame.draw.ellipse(glow_surface, glow_color, glow_surface.get_rect(), glow_size)
+            
+            surface.blit(glow_surface, (self.rect.x - glow_size, self.rect.y - glow_size))
+        
         # Dibujar barra de vida del boss usando el sistema mejorado
         if self.lives > 0:
             bar_width = 300  # Más ancho para el boss final
@@ -501,9 +738,15 @@ class Boss4:
             
             # Barra de vida actual con gradiente
             current_width = int((self.lives / self.max_lives) * bar_width)
-            # Color que cambia según la vida restante
+            # Color que cambia según la vida restante y estado de resistencia
             health_ratio = self.lives / self.max_lives
-            if health_ratio > 0.7:
+            if self.resistance_active:
+                # Barra dorada brillante cuando tiene resistencia
+                color = (255, 215, 0)  # Dorado
+                # Efecto de pulso
+                pulse = int(50 * (1 + 0.3 * pygame.math.Vector2(1, 0).rotate(pygame.time.get_ticks() * 0.3).x))
+                color = (min(255, 255), min(255, 215 + pulse), min(255, 0 + pulse))
+            elif health_ratio > 0.7:
                 color = (255, 0, 0)  # Rojo
             elif health_ratio > 0.3:
                 color = (255, 165, 0)  # Naranja

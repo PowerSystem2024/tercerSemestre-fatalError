@@ -29,9 +29,26 @@ def cargar_nivel(game):
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.1)  # Cambia el volumen (0.0 a 1.0)
     game.enemies = []
-    for _ in range(5 + game.level*2):
+    game.enemies_killed = 0
+    game.level_completed = False
+    
+    # Crear enemigos iniciales - mismo sistema que nivel 3
+    for _ in range(6 + game.level):
         enemy = game.spawn_enemy_far_from_player()
         game.enemies.append(enemy)
+    
     # Asigna las barras y la visibilidad al juego
     game.barras = BARRAS
-    game.barras_invisibles = BARRAS_INVISIBLES 
+    game.barras_invisibles = BARRAS_INVISIBLES
+
+def update_level(game):
+    """Lógica de actualización del nivel 1 - completar con 15 kills"""
+    # Continuar spawneando enemigos hasta alcanzar 15 kills
+    while len(game.enemies) < (6 + game.level) and game.enemies_killed < 15:
+        enemy = game.spawn_enemy_far_from_player()
+        game.enemies.append(enemy)
+    
+    # Completar nivel al matar 15 enemigos
+    if game.enemies_killed >= 15:
+        game.level_completed = True
+        print(f"🎉 ¡NIVEL 1 COMPLETADO! Enemigos eliminados: {game.enemies_killed}") 
