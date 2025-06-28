@@ -64,8 +64,24 @@ class Boss(Enemy):
                 # Desactivar poder
                 self.deactivate_power()
         
-        # Comportamiento inteligente mejorado
-        self.intelligent_movement(player)
+        # --- MODIFICACIÓN: El jefe puede perseguir al traidor si está activo ---
+        traitor = getattr(player, 'traitor_enemy', None)
+        traitor_active = getattr(player, 'traitor_active', False)
+        if traitor and traitor_active:
+            # Elegir objetivo más cercano: jugador o traidor
+            dx_p = player.rect.centerx - self.rect.centerx
+            dy_p = player.rect.centery - self.rect.centery
+            dist_p = (dx_p**2 + dy_p**2) ** 0.5
+            dx_t = traitor.rect.centerx - self.rect.centerx
+            dy_t = traitor.rect.centery - self.rect.centery
+            dist_t = (dx_t**2 + dy_t**2) ** 0.5
+            if dist_t < dist_p:
+                # Perseguir al traidor
+                self.intelligent_movement(traitor)
+            else:
+                self.intelligent_movement(player)
+        else:
+            self.intelligent_movement(player)
     
     def intelligent_movement(self, player):
         """Movimiento inteligente del boss"""

@@ -12,7 +12,7 @@ def show_game_over(screen, user_auth, username, final_score):
     fondo_img = pygame.transform.scale(pygame.image.load("assets/transicionNiveles/fondogameover.png"), (screen.get_width(), screen.get_height()))
     
     # Fuentes
-    title_font = pygame.font.Font("assets/transicionNiveles/font5.ttf", 120)
+    title_font = pygame.font.Font("assets/transicionNiveles/font5.ttf", 124)
     score_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 42)
     info_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 34)
     
@@ -162,44 +162,45 @@ def show_victory(screen, user_auth, username, final_score):
     while waiting:
         screen.blit(fondo_img, (0, 0))
         
-        pos_y = 150
+        pos_y = 169
         line_spacing = 50
 
         # Título
-        title_text, title_font = render_text_fit_width('VICTORIA', "assets/transicionNiveles/font5.ttf", (255, 215, 0), max_text_width, 70)
+        title_text, title_font = render_text_fit_width('VICTORIA', "assets/transicionNiveles/font5.ttf", 	(100, 255, 100), max_text_width, 70)
         title_rect = title_text.get_rect(center=(width//2, pos_y))
         screen.blit(title_text, title_rect)
+        pos_y += line_spacing * 2
+
+        # Puntuación final
+        score_str = f'Puntuación final: {final_score}'
+        score_text, score_font = render_text_fit_width(score_str, "assets/transicionNiveles/fonttexto.TTF", (200,200,200), max_text_width, 34)
+        score_rect = score_text.get_rect(center=(width//2, pos_y))
+        screen.blit(score_text, score_rect)
         pos_y += line_spacing
         
         # Ranking del usuario
         user_rank = user_auth.get_user_rank(username)
         if user_rank:
             rank_str = f'Tu Ranking: #{user_rank}'
-            rank_text, _ = render_text_fit_width(rank_str, "assets/transicionNiveles/fonttexto.TTF", (0, 255, 255), max_text_width, 42)
+            rank_text, _ = render_text_fit_width(rank_str, "assets/transicionNiveles/fonttexto.TTF", (100, 180, 140), max_text_width, 34)
             rank_rect = rank_text.get_rect(center=(width//2, pos_y))
             screen.blit(rank_text, rank_rect)
             pos_y += line_spacing
             
-        # Puntuación final
-        score_str = f'Puntuación final: {final_score}'
-        score_text, score_font = render_text_fit_width(score_str, "assets/transicionNiveles/fonttexto.TTF", (255, 255, 255), max_text_width, 42)
-        score_rect = score_text.get_rect(center=(width//2, pos_y))
-        screen.blit(score_text, score_rect)
-        pos_y += line_spacing
         
         # Mejor puntuación personal
         user_data = user_auth.get_user_data(username)
         current_high_score = user_data.get("high_score", 0) if user_data else 0
         if current_high_score > 0:
             high_score_str = f'Tu mejor puntuación: {current_high_score}'
-            high_score_text, _ = render_text_fit_width(high_score_str, "assets/transicionNiveles/fonttexto.TTF", (255, 255, 0), max_text_width, 42)
+            high_score_text, _ = render_text_fit_width(high_score_str, "assets/transicionNiveles/fonttexto.TTF", (255, 200, 50), max_text_width, 34)
             high_score_rect = high_score_text.get_rect(center=(width//2, pos_y))
             screen.blit(high_score_text, high_score_rect)
             pos_y += line_spacing
         
         # Nuevo récord
         if final_score > current_high_score:
-            new_record_text, _ = render_text_fit_width('¡NUEVO RÉCORD PERSONAL!', "assets/transicionNiveles/fonttexto.TTF", (0, 255, 0), max_text_width, 42)
+            new_record_text, _ = render_text_fit_width('¡NUEVO RÉCORD PERSONAL!', "assets/transicionNiveles/fonttexto.TTF", (0, 255, 0), max_text_width, 34)
             new_record_rect = new_record_text.get_rect(center=(width//2, pos_y))
             screen.blit(new_record_text, new_record_rect)
             pos_y += line_spacing
@@ -209,19 +210,19 @@ def show_victory(screen, user_auth, username, final_score):
         # Mejor puntuación global
         best_score = user_auth.get_best_score()
         if best_score["high_score"] > 0:
-            global_best_str = f'Récord mundial: {best_score["username"]} - {best_score["high_score"]}'
-            global_best_text, _ = render_text_fit_width(global_best_str, "assets/transicionNiveles/fonttexto.TTF", (255, 215, 0), max_text_width, 42)
+            global_best_str = f'Récord Global: {best_score["username"]} - {best_score["high_score"]}'
+            global_best_text, _ = render_text_fit_width(global_best_str, "assets/transicionNiveles/fonttexto.TTF", (255, 200, 50), max_text_width, 34)
             global_best_rect = global_best_text.get_rect(center=(width//2, pos_y))
             screen.blit(global_best_text, global_best_rect)
             pos_y += line_spacing
         
         # Instrucciones
-        info_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 34)
+        info_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 28)
         info1 = info_font.render('Presiona L para ver ranking', True, (200, 200, 200))
         info2 = info_font.render('Presiona ESC para salir', True, (200, 200, 200))
         
-        info1_rect = info1.get_rect(center=(width//2, pos_y + 40))
-        info2_rect = info2.get_rect(center=(width//2, pos_y + 80))
+        info1_rect = info1.get_rect(center=(width//2, pos_y + 10))
+        info2_rect = info2.get_rect(center=(width//2, pos_y + 40))
         
         screen.blit(info1, info1_rect)
         screen.blit(info2, info2_rect)

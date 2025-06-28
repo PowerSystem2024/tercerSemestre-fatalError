@@ -261,6 +261,10 @@ class Game:
 
         # Actualizar enemigos normales
         for enemy in self.enemies[:]:
+            # Si es el traidor, no debe atacar al jugador
+            if hasattr(self, 'traitor_enemy') and enemy is self.traitor_enemy and getattr(self, 'traitor_active', False):
+                # El movimiento y disparo del traidor se maneja en update_nivel2
+                continue
             enemy.update(self.player)
             
             # Recopilar balas de Enemy4
@@ -344,6 +348,10 @@ class Game:
         # Dibujar balas enemigas
         for bullet in self.enemy_bullets:
             bullet.draw(map_surface)
+        # --- DIBUJAR BALAS DEL TRAIDOR EN NIVEL 2 ---
+        if self.level == 2 and hasattr(self, 'traitor_bullets'):
+            for bullet in self.traitor_bullets:
+                bullet.draw(map_surface)
         # INICIO VIDAS DROPEADAS NIVEL 2
         if self.level == 2 and hasattr(self, 'lives_drops'):
             for life in self.lives_drops:

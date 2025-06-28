@@ -10,10 +10,10 @@ def show_leaderboard(screen, user_auth, current_username=None):
     )
     
     # Fuentes
-    title_font = pygame.font.Font("assets/transicionNiveles/font5.ttf", 48)
+    title_font = pygame.font.Font("assets/transicionNiveles/font8.otf", 51)
     header_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 28)
     score_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 22)
-    info_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 18)
+    info_font = pygame.font.Font("assets/transicionNiveles/fonttexto.TTF", 20)
     
     # Obtener datos
     top_scores = user_auth.get_top_10_scores()
@@ -26,7 +26,7 @@ def show_leaderboard(screen, user_auth, current_username=None):
         screen.blit(fondo_img, (0, 0))
         
         # Título
-        title_text = title_font.render('TOP 10 PUNTUACIONES', True, (255, 215, 0))
+        title_text = title_font.render('TOP 10 PUNTUACIONES', True, (204, 102, 0))
         shadow = title_font.render('TOP 10 PUNTUACIONES', True, (40, 40, 0))
         title_rect = title_text.get_rect(center=(screen.get_width()//2, 60))
         shadow_rect = shadow.get_rect(center=(screen.get_width()//2+2, 62))
@@ -35,8 +35,8 @@ def show_leaderboard(screen, user_auth, current_username=None):
         y_offset = 110
         # Mejor puntuación global
         if best_score["high_score"] > 0:
-            best_text = header_font.render(f'🏆 MEJOR MARCA: {best_score["username"]} - {best_score["high_score"]}', True, (255, 255, 0))
-            shadow = header_font.render(f'🏆 MEJOR MARCA: {best_score["username"]} - {best_score["high_score"]}', True, (80, 80, 0))
+            best_text = header_font.render(f'Mejor Puntuación: {best_score["username"]} - {best_score["high_score"]}', True, (255, 200, 50))
+            shadow = header_font.render(f'Mejor Puntuación: {best_score["username"]} - {best_score["high_score"]}', True, (80, 80, 0))
             best_rect = best_text.get_rect(center=(screen.get_width()//2, y_offset))
             shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+1))
             screen.blit(shadow, shadow_rect)
@@ -44,7 +44,7 @@ def show_leaderboard(screen, user_auth, current_username=None):
             y_offset += 40
         # Ranking del usuario actual
         if current_username and user_rank:
-            rank_text = header_font.render(f'Tu posición: #{user_rank}', True, (0, 255, 255))
+            rank_text = header_font.render(f'Tu posición: #{user_rank}', True, (100, 180, 140))
             shadow = header_font.render(f'Tu posición: #{user_rank}', True, (0, 80, 80))
             rank_rect = rank_text.get_rect(center=(screen.get_width()//2, y_offset))
             shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, y_offset+1))
@@ -53,7 +53,7 @@ def show_leaderboard(screen, user_auth, current_username=None):
             y_offset += 36
         # Lista del top 10
         y_start = y_offset + 10
-        line_height = 38
+        line_height = 30
         for i, score_data in enumerate(top_scores):
             color = (0, 255, 0) if (current_username and score_data["username"] == current_username) else (255, 255, 255)
             if i == 0:
@@ -87,8 +87,8 @@ def show_leaderboard(screen, user_auth, current_username=None):
         # Instrucciones de salida
         exit_text = info_font.render('Presiona ESC para volver', True, (200, 200, 200))
         shadow = info_font.render('Presiona ESC para volver', True, (40,40,40))
-        exit_rect = exit_text.get_rect(center=(screen.get_width()//2, screen.get_height() - 40))
-        shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, screen.get_height() - 39))
+        exit_rect = exit_text.get_rect(center=(screen.get_width()//2, screen.get_height() - 62))
+        shadow_rect = shadow.get_rect(center=(screen.get_width()//2+1, screen.get_height() - 61))
         screen.blit(shadow, shadow_rect)
         screen.blit(exit_text, exit_rect)
         
