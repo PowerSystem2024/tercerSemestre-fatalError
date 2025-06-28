@@ -189,7 +189,7 @@ def show_login(screen, user_auth):
         screen.blit(pass_label, (input_box_pass.x, input_box_pass.y - 22))
         
         if password_text or active_pass:
-            txt_surface_pass = FONT_MEDIUM.render('*' * len(password_text), True, TEXT_COLOR) # Display asterisks
+            txt_surface_pass = FONT_MEDIUM.render('x' * len(password_text), True, TEXT_COLOR) # Display asterisks
             screen.blit(txt_surface_pass, (input_box_pass.x+10, input_box_pass.y+8)) # Ajuste vertical
         else:
             placeholder_surface_pass = FONT_MEDIUM.render('Escribe tu contrasena', True, PLACEHOLDER_COLOR)
