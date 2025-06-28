@@ -1,8 +1,8 @@
 import pygame
 from screens.level_transition import show_level_transition
 from entities.player import Player
-from entities.enemy import Enemy, Enemy2, Enemy3
-from entities.bullet import Bullet
+from entities.enemy import Enemy, Enemy2, Enemy3, Enemy4
+from entities.bullet import Bullet, EnemyBullet
 import random
 
 WINDOW_SIZE = (1024, 576)  # Tamaño apropiado para notebooks
@@ -27,7 +27,7 @@ class Game:
         self.cursor_img = pygame.transform.scale(self.cursor_img, (40, 40))
         pygame.mouse.set_visible(False)
         self.sangre_img = pygame.image.load('assets/muerte/sangre.png').convert_alpha()
-        self.sangre_img = pygame.transform.scale(self.sangre_img, (60, 60))
+        self.sangre_img = pygame.transform.scale(self.sangre_img, (100, 100))
         
         # Sistema de puntuación
         self.score = 0
@@ -60,10 +60,12 @@ class Game:
         self.player = Player()
         self.enemies = []
         self.bullets = []
+        self.enemy_bullets = []  # Balas de los enemigos
         self.sangre_list = []
         self.boss = None
         self.boss_spawned = False
         self.level_completed = False
+        self.boss_defeated = False  # Flag para detectar cuando el boss muere
 
         user_data = self.user_auth.get_user_data(self.username)
         level_module = self.level_manager.load_level(self.level, user_data)
@@ -107,6 +109,8 @@ class Game:
                     enemy = Enemy2(self.level, MAP_SIZE)
             elif self.level == 3:
                 enemy = Enemy3(self.level, MAP_SIZE)
+            elif self.level == 4:
+                enemy = Enemy4(self.level, MAP_SIZE)
             else:
                 enemy = Enemy(self.level, MAP_SIZE)
             dist = ((enemy.rect.centerx - self.player.rect.centerx) ** 2 + (enemy.rect.centery - self.player.rect.centery) ** 2) ** 0.5
@@ -183,9 +187,15 @@ class Game:
                     self.running = False
             if self.level == 3 and self.boss and self.boss.lives <= 0:
                 self.next_level()
+            elif self.level == 4 and self.boss_defeated:
+                # Nivel 4 completado - mostrar victoria
+                print("🏆 ¡JUEGO COMPLETADO! Mostrando pantalla de victoria...")
+                from screens.game_over import show_victory
+                show_victory(self.screen, self.user_auth, self.username, self.score)
+                self.running = False
             elif self.level == 2 and self.level_completed:
                 self.next_level()
-            elif self.level != 2 and self.enemies_killed >= 20 and not self.boss_spawned:
+            elif self.level != 2 and self.level != 3 and self.level != 4 and self.enemies_killed >= 20 and not self.boss_spawned:
                 if self.level < self.max_level:
                     self.next_level()
                 else:
@@ -219,36 +229,73 @@ class Game:
                     break
             # Verificar colisiones con el jefe
             if self.boss and bullet.rect.colliderect(self.boss.rect):
-                self.boss.lives -= 1
-                if bullet in self.bullets:
-                    self.bullets.remove(bullet)
+                # Usar el nuevo sistema de daño para el boss del nivel 2
+                if self.level == 2 and hasattr(self.boss, 'take_damage'):
+                    damage_applied = self.boss.take_damage(1)
+                    # Siempre eliminar la bala, haga daño o no
+                    if bullet in self.bullets:
+                        self.bullets.remove(bullet)
+                else:
+                    # Sistema de daño normal para otros bosses
+                    self.boss.lives -= 1
+                    if bullet in self.bullets:
+                        self.bullets.remove(bullet)
+                
                 if self.boss.lives <= 0:
+                    # Agregar puntos por matar jefe
+                    if self.level == 4:
+                        self.add_score(self.score_per_enemy * 10)  # 10x más puntos por boss final
+                        self.boss_defeated = True  # Marcar boss como derrotado
+                        print("🎉 ¡BOSS DEL NIVEL 4 DERROTADO!")
+                    else:
+                        self.add_score(self.score_per_enemy * 5)  # 5x más puntos por jefe
+                    
                     self.boss = None
                     self.level_completed = True
-                    # Agregar puntos por matar jefe
-                    self.add_score(self.score_per_enemy * 5)  # 5x más puntos por jefe
+                    
                     # Si estamos en el nivel 3, pasar al siguiente nivel cuando se mata al jefe
                     if self.level == 3:
                         self.next_level()
+                    # El nivel 4 se maneja en el método run()
                 break
 
         # Actualizar enemigos normales
         for enemy in self.enemies[:]:
-            if type(enemy).__name__ in ["Enemy", "Enemy2"]:
-                enemy.update(self.player, self.barras)
-            else:
-                enemy.update(self.player)
-            # Solo los enemigos que no son Enemy3 causan daño por contacto
+            enemy.update(self.player)
+            
+            # Recopilar balas de Enemy4
+            if isinstance(enemy, Enemy4):
+                self.enemy_bullets.extend(enemy.get_bullets())
+                enemy.clear_bullets()
+            
+            # Solo los enemigos que no son Enemy3 o Enemy4 causan daño por contacto
             # Los Enemy3 atacan con su sistema de ataque propio
-            if not isinstance(enemy, type(self.enemies[0])) or not hasattr(enemy, 'is_attacking'):
+            # Los Enemy4 atacan a distancia
+            if (not hasattr(enemy, 'is_attacking') and not isinstance(enemy, Enemy4)):
                 if enemy.rect.colliderect(self.player.hitbox):
                     hit_successful = self.player.hit()
                     if hit_successful and enemy in self.enemies:
                         self.enemies.remove(enemy)
+        
+        # Actualizar balas enemigas
+        for bullet in self.enemy_bullets[:]:
+            if not bullet.update():
+                self.enemy_bullets.remove(bullet)
+            elif bullet.rect.colliderect(self.player.hitbox):
+                hit_successful = self.player.hit()
+                if hit_successful:
+                    self.enemy_bullets.remove(bullet)
 
         # Actualizar jefe
         if self.boss:
             self.boss.update(self.player)
+            
+            # Recopilar balas del boss si es Boss4
+            if hasattr(self.boss, 'get_bullets'):
+                self.enemy_bullets.extend(self.boss.get_bullets())
+                self.boss.clear_bullets()
+            
+            # Colisión directa con el boss
             if self.boss.rect.colliderect(self.player.hitbox):
                 self.player.hit()
                 
@@ -263,6 +310,9 @@ class Game:
             if not self.boss_spawned:
                 while len(self.enemies) < (5 + self.level*2):
                     self.enemies.append(self.spawn_enemy_far_from_player())
+        elif self.level == 4:
+            # En nivel 4 no spawneamos más enemigos, solo actualizamos el nivel
+            pass
         else:
             while len(self.enemies) < (5 + self.level*2):
                 self.enemies.append(self.spawn_enemy_far_from_player())
@@ -271,6 +321,11 @@ class Game:
         if self.level == 3:
             from niveles import nivel3
             nivel3.update_level(self)
+        
+        # Actualizar nivel 4
+        elif self.level == 4:
+            from niveles import nivel4
+            nivel4.update_level(self)
 
     def draw(self):
         cam_x = max(0, min(self.player.rect.centerx - WINDOW_SIZE[0]//2, MAP_SIZE[0] - WINDOW_SIZE[0]))
@@ -285,6 +340,9 @@ class Game:
         if self.boss:
             self.boss.draw(map_surface)
         for bullet in self.bullets:
+            bullet.draw(map_surface)
+        # Dibujar balas enemigas
+        for bullet in self.enemy_bullets:
             bullet.draw(map_surface)
         # INICIO VIDAS DROPEADAS NIVEL 2
         if self.level == 2 and hasattr(self, 'lives_drops'):

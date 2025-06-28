@@ -1,6 +1,6 @@
 import random
 from entities.enemy import Enemy3
-from entities.boss import Boss
+from entities.boss import Boss3
 import pygame
 
 # BARRAS 
@@ -15,13 +15,15 @@ BARRAS = [
     pygame.Rect(220, 620, 250, 100),    # TANQUE IZQUIERDO
     pygame.Rect(785, 700, 350, 350),    # ESTRUCTURA CON ESTRELLA más grande y más arriba
 ]
-BARRAS_INVISIBLES = False
+BARRAS_INVISIBLES = True
 
 def cargar_nivel(game):
     # Música de fondo para el nivel 3
     pygame.mixer.music.load('soundtracks/Level3 OST.mp3')
     pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.1)  # Cambia el volumen (0.0 a 1.0)
+    game.barras = BARRAS
+    game.barras_invisibles = BARRAS_INVISIBLES
     game.enemies = []
     game.boss = None
     game.enemies_killed = 0
@@ -41,15 +43,18 @@ def cargar_nivel(game):
             if distance > 300:  # Al menos 300 píxeles de distancia
                 break
         game.enemies.append(enemy)
+    
+    # Asigna las barras y la visibilidad al juego
     game.barras = BARRAS
     game.barras_invisibles = BARRAS_INVISIBLES
 
 def update_level(game):
     # Verificar si debemos spawnear el jefe
-    if not game.boss_spawned and game.enemies_killed >= 19:  # Reducimos de 8 a 6 enemigos para spawnear el jefe
-        game.boss = Boss(game.level, (1920, 1080))  # Usamos el tamaño del mapa directamente
+    if not game.boss_spawned and game.enemies_killed >= 15:  # Menos enemigos para que aparezca más rápido
+        game.boss = Boss3(game.level, (1920, 1080))  # Usar el nuevo Boss3 mejorado
         game.boss_spawned = True
         game.enemies = []  # Limpiar enemigos normales cuando aparece el jefe
+        print("🔥 ¡BOSS NIVEL 3 APARECE! Prepárate para la batalla!")
     
     # Actualizar el jefe si existe
     if game.boss:

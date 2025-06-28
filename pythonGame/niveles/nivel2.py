@@ -15,7 +15,7 @@ BARRAS = [
     pygame.Rect(220, 620, 250, 100),    # TANQUE IZQUIERDO
     pygame.Rect(785, 700, 350, 350),    # ESTRUCTURA CON ESTRELLA más grande y más arriba
 ]
-BARRAS_INVISIBLES = False
+BARRAS_INVISIBLES = True
 
 def cargar_nivel(game):
     # Música de fondo para el nivel 2

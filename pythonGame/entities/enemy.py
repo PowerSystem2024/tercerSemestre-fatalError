@@ -324,4 +324,172 @@ class Enemy3:
         # Dibujar círculo de rango de ataque (comentado para producción)
         # pygame.draw.circle(surface, (255, 255, 0), self.rect.center, self.attack_range, 1)
 
-from entities.bullet import Bullet 
+from entities.bullet import Bullet, EnemyBullet
+
+class Enemy4:
+    def __init__(self, level, map_size, pos=None):
+        # Usar sprites de enemigos normales para movimiento (misma escala que Enemy1)
+        self.spritesheet = SpriteSheet('assets/enemigos/enemigoslevel1.png', 'assets/enemigos/enemigoslevel1.plist', scale=0.5)
+        # Spritesheet para ataques a distancia (escala ajustada para que se vea bien)
+        self.attack_spritesheet = SpriteSheet('assets/enemigos/ataques/ataque-enemigo-4.png', 'assets/enemigos/ataques/ataque-enemigo-4.plist', scale=0.7)
+        
+        # Animaciones de movimiento
+        self.move_animations = {
+            'down': self.spritesheet.get_images_by_range(0, 4),
+            'left': self.spritesheet.get_images_by_range(4, 8),
+            'right': self.spritesheet.get_images_by_range(8, 12),
+            'up': self.spritesheet.get_images_by_range(12, 16)
+        }
+        
+        # Animaciones de ataque (disparos)
+        self.attack_animations = {
+            'down': [
+                self.attack_spritesheet.get_image_by_name('ataqueAbajo1.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueAbajo2.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueAbajo3.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueAbajo4.png')
+            ],
+            'left': [
+                self.attack_spritesheet.get_image_by_name('AtaqueIzquierda1.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueIzquierda2.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueIzquierda3.png'),
+                self.attack_spritesheet.get_image_by_name('ataqueIzquierda4.png')
+            ],
+            'right': [
+                self.attack_spritesheet.get_image_by_name('AtaqueDerecha1.png'),
+                self.attack_spritesheet.get_image_by_name('ataqueDerecha2.png'),
+                self.attack_spritesheet.get_image_by_name('ataqueDerecha3.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueDerecha4.png')
+            ],
+            'up': [
+                self.attack_spritesheet.get_image_by_name('AtaqueArriba1.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueArriba2.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueArriba3.png'),
+                self.attack_spritesheet.get_image_by_name('AtaqueArriba4.png')
+            ]
+        }
+        
+        self.direction = 'down'
+        self.anim_index = 0
+        self.anim_timer = 0
+        self.anim_speed = 0.12
+        self.image = self.move_animations[self.direction][self.anim_index]
+        self.rect = self.image.get_rect()
+        if pos:
+            self.rect.center = pos
+        else:
+            self.rect.x = random.randint(0, map_size[0]-self.rect.width)
+            self.rect.y = random.randint(0, map_size[1]-self.rect.height)
+        self.speed = 1.8 + (level * 0.2)  # Velocidad moderada
+        
+        # Variables para el ataque a distancia
+        self.is_attacking = False
+        self.attack_timer = 0
+        self.attack_duration = 0.8  # Duración del ataque en segundos
+        self.attack_cooldown = 2.5  # Tiempo entre ataques en segundos
+        self.last_attack_time = 0
+        self.attack_range = 250  # Rango de disparo más largo
+        self.bullets = []  # Lista de balas del enemigo
+        
+        # Cargar sonido de disparo si existe
+        try:
+            self.shoot_sound = pygame.mixer.Sound('sonidos/Disparo.wav')
+        except:
+            self.shoot_sound = None
+            
+        # Verificar que los sprites de ataque se cargaron
+        for direction in ['down', 'left', 'right', 'up']:
+            for i, sprite in enumerate(self.attack_animations[direction]):
+                if sprite is None:
+                    print(f"ERROR: Sprite de ataque Enemy4 {direction}[{i}] es None")
+
+    def update(self, player):
+        dx = player.rect.centerx - self.rect.centerx
+        dy = player.rect.centery - self.rect.centery
+        dist = max(1, (dx**2 + dy**2) ** 0.5)
+        
+        current_time = pygame.time.get_ticks() / 1000.0  # Convertir a segundos
+        
+        # Actualizar dirección basada en la posición del jugador
+        if abs(dx) > abs(dy):
+            self.direction = 'right' if dx > 0 else 'left'
+        else:
+            self.direction = 'down' if dy > 0 else 'up'
+        
+        # Actualizar balas del enemigo
+        self.bullets = [bullet for bullet in self.bullets if bullet.update()]
+        
+        # Si está atacando, actualizar animación de ataque
+        if self.is_attacking:
+            self.attack_timer += 1/60.0  # Asumiendo 60 FPS
+            
+            # Animación de ataque
+            self.anim_timer += self.anim_speed * 2.5  # Ataque más rápido
+            if self.anim_timer >= 1:
+                self.anim_index = (self.anim_index + 1) % len(self.attack_animations[self.direction])
+                self.anim_timer = 0
+                
+                # Disparar en el frame de disparo
+                if self.anim_index == 2:  # Frame de disparo
+                    bullet = EnemyBullet(self.rect.centerx, self.rect.centery, 
+                                       player.rect.centerx, player.rect.centery)
+                    self.bullets.append(bullet)
+                    if self.shoot_sound:
+                        self.shoot_sound.play()
+            
+            self.image = self.attack_animations[self.direction][self.anim_index]
+            
+            # Terminar ataque
+            if self.attack_timer >= self.attack_duration:
+                self.is_attacking = False
+                self.attack_timer = 0
+                self.anim_index = 0
+        else:
+            # Verificar si puede atacar
+            can_attack = (dist <= self.attack_range and 
+                         current_time - self.last_attack_time >= self.attack_cooldown)
+            
+            if can_attack:
+                # Iniciar ataque
+                self.is_attacking = True
+                self.attack_timer = 0
+                self.last_attack_time = current_time
+                self.anim_index = 0
+                self.anim_timer = 0
+            else:
+                # Movimiento: mantener distancia óptima para disparar
+                if dist > self.attack_range:
+                    # Acercarse si está muy lejos
+                    self.rect.x += int(self.speed * dx / dist)
+                    self.rect.y += int(self.speed * dy / dist)
+                elif dist < self.attack_range * 0.7:
+                    # Alejarse si está muy cerca
+                    self.rect.x -= int(self.speed * dx / dist * 0.5)
+                    self.rect.y -= int(self.speed * dy / dist * 0.5)
+                # Si está en rango óptimo, no moverse
+                
+                # Animación de movimiento
+                if dist > self.attack_range or dist < self.attack_range * 0.7:
+                    self.anim_timer += self.anim_speed
+                    if self.anim_timer >= 1:
+                        self.anim_index = (self.anim_index + 1) % len(self.move_animations[self.direction])
+                        self.anim_timer = 0
+                    self.image = self.move_animations[self.direction][self.anim_index]
+
+    def get_bullets(self):
+        """Devuelve las balas del enemigo para manejo externo"""
+        return self.bullets
+
+    def clear_bullets(self):
+        """Limpia todas las balas del enemigo"""
+        self.bullets = []
+
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
+        
+        # Dibujar balas del enemigo
+        for bullet in self.bullets:
+            bullet.draw(surface)
+        
+        # Debug: Dibujar rango de ataque (comentado para producción)
+        # pygame.draw.circle(surface, (255, 0, 255), self.rect.center, self.attack_range, 1) 

@@ -21,7 +21,7 @@ BARRAS = [
 ]
 
 # Variable para alternar visibilidad de las barras
-BARRAS_INVISIBLES = False  # Cambia a True para hacerlas invisibles
+BARRAS_INVISIBLES = True  # Cambia a True para hacerlas invisibles
 
 def cargar_nivel(game):
     # Música de fondo para el nivel 1
