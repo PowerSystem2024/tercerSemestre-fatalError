@@ -37,16 +37,16 @@ def cargar_nivel(game):
         game.enemies.append(enemy)
 
     # Spawnea los primeros enemigos
-    for _ in range(5 + game.level):
+    for _ in range(6 + game.level):
         spawn_enemy()
 
     # Lógica de actualización del nivel 2
     def update_nivel2():
-        # Spawnea nuevos enemigos hasta 40 kills
-        while len(game.enemies) < (5 + game.level) and game.enemies_killed < 40 and not game.boss_spawned:
+        # Spawnea nuevos enemigos hasta 15 kills
+        while len(game.enemies) < (6 + game.level) and game.enemies_killed < 15 and not game.boss_spawned:
             spawn_enemy()
-        # Spawnea jefe al matar 40 enemigos
-        if game.enemies_killed >= 40 and not game.boss_spawned:
+        # Spawnea jefe al matar 15 enemigos
+        if game.enemies_killed >= 15 and not game.boss_spawned:
             game.boss = Boss(game.level, (1920, 1080))
             game.boss_spawned = True
             game.enemies.clear()  # Eliminar todos los enemigos restantes
