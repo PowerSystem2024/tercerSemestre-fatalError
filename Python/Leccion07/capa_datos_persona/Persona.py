@@ -1,4 +1,5 @@
-from logger_base import log
+import logger_base 
+import logging as log
 
 
 class Persona:

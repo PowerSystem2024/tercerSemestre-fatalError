@@ -1,0 +1,275 @@
+08:08:03 PM:DEBUG [logger_base.py:13] Mensaje a nivel debug
+08:08:03 PM:INFO [logger_base.py:14] Mensaje a nivel info
+08:08:03 PM:WARNING [logger_base.py:15] Mensaje a nivel warning
+08:08:03 PM:ERROR [logger_base.py:16] Mensaje a nivel error
+08:08:03 PM:CRITICAL [logger_base.py:17] Mensaje a nivel critical
+08:08:39 PM:DEBUG [logger_base.py:13] Mensaje a nivel debug
+08:08:39 PM:INFO [logger_base.py:14] Mensaje a nivel info
+08:08:39 PM:WARNING [logger_base.py:15] Mensaje a nivel warning
+08:08:39 PM:ERROR [logger_base.py:16] Mensaje a nivel error
+08:08:39 PM:CRITICAL [logger_base.py:17] Mensaje a nivel critical
+08:08:49 PM:DEBUG [logger_base.py:13] Mensaje a nivel debug
+08:08:49 PM:INFO [logger_base.py:14] Mensaje a nivel info
+08:08:49 PM:WARNING [logger_base.py:15] Mensaje a nivel warning
+08:08:49 PM:ERROR [logger_base.py:16] Mensaje a nivel error
+08:08:49 PM:CRITICAL [logger_base.py:17] Mensaje a nivel critical
+08:08:59 PM:DEBUG [logger_base.py:13] Mensaje a nivel debug
+08:08:59 PM:INFO [logger_base.py:14] Mensaje a nivel info
+08:08:59 PM:WARNING [logger_base.py:15] Mensaje a nivel warning
+08:08:59 PM:ERROR [logger_base.py:16] Mensaje a nivel error
+08:08:59 PM:CRITICAL [logger_base.py:17] Mensaje a nivel critical
+08:10:21 PM:DEBUG [logger_base.py:13] Mensaje a nivel debug
+08:10:21 PM:INFO [logger_base.py:14] Mensaje a nivel info
+08:10:21 PM:WARNING [logger_base.py:15] Mensaje a nivel warning
+08:10:21 PM:ERROR [logger_base.py:16] Mensaje a nivel error
+08:10:21 PM:CRITICAL [logger_base.py:17] Mensaje a nivel critical
+08:10:27 PM:DEBUG [Persona.py:55] 
+            Id Persona: 1,
+            Nombre: Juan,
+            Apellido: Perez,
+            Email: jperez@mail.com
+        
+08:10:27 PM:DEBUG [Persona.py:57] 
+            Id Persona: None,
+            Nombre: Jose,
+            Apellido: Lepez,
+            Email: ljose@mail.com
+        
+08:10:27 PM:DEBUG [Persona.py:59] 
+            Id Persona: 1,
+            Nombre: None,
+            Apellido: None,
+            Email: None
+        
+08:18:47 PM:ERROR [conexion.py:28] Ocurrió un error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+08:22:04 PM:DEBUG [Persona.py:55] 
+            Id Persona: 1,
+            Nombre: Juan,
+            Apellido: Perez,
+            Email: jperez@mail.com
+        
+08:22:04 PM:DEBUG [Persona.py:57] 
+            Id Persona: None,
+            Nombre: Jose,
+            Apellido: Lepez,
+            Email: ljose@mail.com
+        
+08:22:04 PM:DEBUG [Persona.py:59] 
+            Id Persona: 1,
+            Nombre: None,
+            Apellido: None,
+            Email: None
+        
+08:22:36 PM:ERROR [conexion.py:28] Ocurrió un error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+09:03:56 PM:ERROR [conexion.py:28] Ocurrió un error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+09:04:33 PM:ERROR [conexion.py:28] Ocurrió un error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+09:05:08 PM:ERROR [conexion.py:28] Ocurrió un error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+09:07:12 PM:DEBUG [logger_base.py:13] Mensaje a nivel debug
+09:07:12 PM:INFO [logger_base.py:14] Mensaje a nivel info
+09:07:12 PM:WARNING [logger_base.py:15] Mensaje a nivel warning
+09:07:12 PM:ERROR [logger_base.py:16] Mensaje a nivel error
+09:07:12 PM:CRITICAL [logger_base.py:17] Mensaje a nivel critical
+09:07:30 PM:DEBUG [logger_base.py:13] Mensaje a nivel debug
+09:07:30 PM:INFO [logger_base.py:14] Mensaje a nivel info
+09:07:30 PM:WARNING [logger_base.py:15] Mensaje a nivel warning
+09:07:30 PM:ERROR [logger_base.py:16] Mensaje a nivel error
+09:07:30 PM:CRITICAL [logger_base.py:17] Mensaje a nivel critical
+09:07:54 PM:DEBUG [logger_base.py:13] Mensaje a nivel debug
+09:07:54 PM:INFO [logger_base.py:14] Mensaje a nivel info
+09:07:54 PM:WARNING [logger_base.py:15] Mensaje a nivel warning
+09:07:54 PM:ERROR [logger_base.py:16] Mensaje a nivel error
+09:07:54 PM:CRITICAL [logger_base.py:17] Mensaje a nivel critical
+09:08:04 PM:ERROR [conexion.py:28] Ocurrió un error: connection to server at "127.0.0.1", port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+09:33:43 PM:ERROR [conexion.py:28] Ocurrió un error: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+01:52:25 PM:ERROR [conexion.py:28] Ocurrió un error: 'utf-8' codec can't decode byte 0xab in position 90: invalid start byte
+02:48:59 PM:DEBUG [conexion.py:25] Conexión Exitosa: <connection object at 0x00000246D1A3B450; dsn: 'user=postgres password=xxx dbname=test_bd host=127.0.0.1 port=5432', closed: 0>
+02:48:59 PM:DEBUG [conexion.py:38] Se abrió correctamente el cursor: <cursor object at 0x00000246D3697060; closed: 0>
+01:04:17 PM:DEBUG [Persona.py:56] 
+            Id Persona: 1,
+            Nombre: Juan,
+            Apellido: Perez,
+            Email: jperez@mail.com
+        
+01:04:17 PM:DEBUG [Persona.py:58] 
+            Id Persona: None,
+            Nombre: Jose,
+            Apellido: Lepez,
+            Email: ljose@mail.com
+        
+01:04:17 PM:DEBUG [Persona.py:60] 
+            Id Persona: 1,
+            Nombre: None,
+            Apellido: None,
+            Email: None
+        
+01:16:11 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+01:29:41 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+01:46:51 PM:DEBUG [conexion.py:30] Creación del pool exitosa: <psycopg_pool.pool.ConnectionPool 'pool-1' at 0x210f2741940>
+01:46:51 PM:DEBUG [conexion.py:39] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x210f27427b0>
+01:48:27 PM:DEBUG [conexion.py:30] Creación del pool exitosa: <psycopg_pool.pool.ConnectionPool 'pool-1' at 0x21cc9e41940>
+01:48:28 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x21cc9e42270>
+01:48:28 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x21cc9e42270>
+01:48:28 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x21cc9f01a90>
+01:48:28 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x21cc9f01a90>
+01:49:52 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+01:49:52 PM:DEBUG [conexion.py:30] Creación del pool exitosa: <psycopg_pool.pool.ConnectionPool 'pool-1' at 0x259d1fd5a90>
+01:49:52 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x259d1fd6900>
+01:49:52 PM:DEBUG [cursor_del_pool.py:28] Dentro del bloque with
+01:49:52 PM:DEBUG [cursor_del_pool.py:30] []
+01:49:52 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+01:49:52 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+01:49:52 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x259d1fd6900>
+01:49:57 PM:WARNING [_acompat.py:170] couldn't stop thread 'pool-1-worker-0' within 5.0 seconds
+01:49:57 PM:WARNING [_acompat.py:172] hint: you can try to call 'close()' explicitly or to use the pool as context manager
+01:50:02 PM:WARNING [_acompat.py:170] couldn't stop thread 'pool-1-worker-1' within 5.0 seconds
+01:50:02 PM:WARNING [_acompat.py:172] hint: you can try to call 'close()' explicitly or to use the pool as context manager
+01:50:07 PM:WARNING [_acompat.py:170] couldn't stop thread 'pool-1-worker-2' within 5.0 seconds
+01:50:07 PM:WARNING [_acompat.py:172] hint: you can try to call 'close()' explicitly or to use the pool as context manager
+01:50:12 PM:WARNING [_acompat.py:170] couldn't stop thread 'pool-1-scheduler' within 5.0 seconds
+01:50:12 PM:WARNING [_acompat.py:172] hint: you can try to call 'close()' explicitly or to use the pool as context manager
+02:07:09 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:07:09 PM:DEBUG [conexion.py:30] Creación del pool exitosa: <psycopg_pool.pool.ConnectionPool 'pool-1' at 0x164df2f9e80>
+02:07:09 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x164df2facf0>
+02:07:09 PM:DEBUG [persona_dao.py:36] Persona insertada: 
+            Id Persona: None,
+            Nombre: Omero,
+            Apellido: Ramos,
+            Email: omeror@mail.com
+        
+02:07:09 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:07:09 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:07:09 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x164df2facf0>
+02:07:09 PM:DEBUG [persona_dao.py:60] Personas insertadas: 1
+02:07:09 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:07:09 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x164df3b65d0>
+02:07:09 PM:DEBUG [persona_dao.py:52] Persona eliminada: 
+            Id Persona: 8,
+            Nombre: None,
+            Apellido: None,
+            Email: None
+        
+02:07:09 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:07:09 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:07:09 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x164df3b65d0>
+02:07:09 PM:DEBUG [persona_dao.py:65] Personas eliminadas: 0
+02:07:09 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:07:09 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x164df3b6c10>
+02:07:09 PM:DEBUG [persona_dao.py:44] Persona actualizada: 
+            Id Persona: 1,
+            Nombre: Homero,
+            Apellido: Simpson,
+            Email: homero@springfield.com
+        
+02:07:09 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:07:09 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:07:09 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x164df3b6c10>
+02:07:09 PM:DEBUG [persona_dao.py:70] Personas actualizadas: 1
+02:07:09 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:07:09 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x164df2facf0>
+02:07:09 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:07:09 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:07:09 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x164df2facf0>
+02:07:09 PM:DEBUG [persona_dao.py:75] 
+            Id Persona: 1,
+            Nombre: Homero,
+            Apellido: Simpson,
+            Email: homero@springfield.com
+        
+02:07:14 PM:WARNING [_acompat.py:170] couldn't stop thread 'pool-1-worker-0' within 5.0 seconds
+02:07:14 PM:WARNING [_acompat.py:172] hint: you can try to call 'close()' explicitly or to use the pool as context manager
+02:07:19 PM:WARNING [_acompat.py:170] couldn't stop thread 'pool-1-worker-1' within 5.0 seconds
+02:07:19 PM:WARNING [_acompat.py:172] hint: you can try to call 'close()' explicitly or to use the pool as context manager
+02:07:24 PM:WARNING [_acompat.py:170] couldn't stop thread 'pool-1-worker-2' within 5.0 seconds
+02:07:24 PM:WARNING [_acompat.py:172] hint: you can try to call 'close()' explicitly or to use the pool as context manager
+02:07:29 PM:WARNING [_acompat.py:170] couldn't stop thread 'pool-1-scheduler' within 5.0 seconds
+02:07:29 PM:WARNING [_acompat.py:172] hint: you can try to call 'close()' explicitly or to use the pool as context manager
+02:09:27 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:09:27 PM:DEBUG [conexion.py:30] Creación del pool exitosa: <psycopg_pool.pool.ConnectionPool 'pool-1' at 0x1515f999e80>
+02:09:27 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1515f99acf0>
+02:09:27 PM:DEBUG [persona_dao.py:44] Persona actualizada: 
+            Id Persona: 1,
+            Nombre: Homero,
+            Apellido: Simpson,
+            Email: homero@springfield.com
+        
+02:09:27 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:09:27 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:09:27 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1515f99acf0>
+02:09:27 PM:DEBUG [persona_dao.py:70] Personas actualizadas: 1
+02:09:27 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:09:27 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1515fa55e50>
+02:09:27 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:09:27 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:09:27 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1515fa55e50>
+02:09:27 PM:DEBUG [persona_dao.py:75] 
+            Id Persona: 1,
+            Nombre: Homero,
+            Apellido: Simpson,
+            Email: homero@springfield.com
+        
+02:11:29 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:11:29 PM:DEBUG [conexion.py:30] Creación del pool exitosa: <psycopg_pool.pool.ConnectionPool 'pool-1' at 0x1957e079e80>
+02:11:29 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1957e07acf0>
+02:11:29 PM:DEBUG [persona_dao.py:36] Persona insertada: 
+            Id Persona: None,
+            Nombre: Marcos,
+            Apellido: Tejada,
+            Email: tejadam@mail.com
+        
+02:11:29 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:11:29 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:11:29 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1957e07acf0>
+02:11:29 PM:DEBUG [persona_dao.py:60] Personas insertadas: 1
+02:11:29 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:11:29 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1957e136e90>
+02:11:29 PM:DEBUG [persona_dao.py:52] Persona eliminada: 
+            Id Persona: 18,
+            Nombre: None,
+            Apellido: None,
+            Email: None
+        
+02:11:29 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:11:29 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:11:29 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1957e136e90>
+02:11:29 PM:DEBUG [persona_dao.py:65] Personas eliminadas: 0
+02:11:29 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:11:29 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1957e07acf0>
+02:11:29 PM:DEBUG [persona_dao.py:44] Persona actualizada: 
+            Id Persona: 1,
+            Nombre: Homero,
+            Apellido: Simpson,
+            Email: homero@springfield.com
+        
+02:11:29 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:11:29 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:11:29 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1957e07acf0>
+02:11:29 PM:DEBUG [persona_dao.py:70] Personas actualizadas: 1
+02:11:29 PM:DEBUG [cursor_del_pool.py:10] Inicio del método with y __enter__
+02:11:29 PM:DEBUG [conexion.py:40] Conexión obtenida del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1957e136e90>
+02:11:29 PM:DEBUG [cursor_del_pool.py:16] Se ejecuta el metodo exit
+02:11:29 PM:DEBUG [cursor_del_pool.py:22] Commit de la transaccion
+02:11:29 PM:DEBUG [conexion.py:46] Regresamos la conexion del pool: <psycopg.Connection [IDLE] (host=127.0.0.1 user=postgres database=test_bd) at 0x1957e136e90>
+02:11:29 PM:DEBUG [persona_dao.py:75] 
+            Id Persona: 1,
+            Nombre: Homero,
+            Apellido: Simpson,
+            Email: homero@springfield.com
+        
+02:11:29 PM:DEBUG [persona_dao.py:75] 
+            Id Persona: 2,
+            Nombre: Marcos,
+            Apellido: Tejada,
+            Email: tejadam@mail.com
+        
